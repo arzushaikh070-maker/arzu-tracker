@@ -929,6 +929,183 @@ body {
 .card-3d:hover {
   --tz: 8px;
 }
+
+/* ── AI Coach Chat ── */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 180px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  padding: 10px 16px;
+  gap: 16px;
+}
+@media (max-width: 375px) {
+  .chat-container {
+    height: calc(100vh - 165px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scrollbar-width: none;
+  padding-top: 15px;
+}
+.chat-messages::-webkit-scrollbar { display: none; }
+
+.chat-bubble {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  position: relative;
+  animation: bubble-appear 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  box-shadow: var(--shadow-3d-sm);
+}
+@keyframes bubble-appear {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.chat-bubble.bot {
+  align-self: flex-start;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-glow);
+  border-top-left-radius: 4px;
+}
+.chat-bubble.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--color-emerald) 0%, #065f46 100%);
+  color: #fff;
+  border-top-right-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+.chat-bubble.bot::before {
+  content: "🤖 Arzu AI Coach";
+  position: absolute;
+  top: -18px; left: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.chat-bubble.user::before {
+  content: "You";
+  position: absolute;
+  top: -18px; right: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.chips-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.chips-row::-webkit-scrollbar { display: none; }
+.suggest-chip {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-spring);
+  -webkit-appearance: none;
+}
+.suggest-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+.suggest-chip:active {
+  transform: translateY(0);
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glow);
+  border-radius: 18px;
+  box-shadow: var(--shadow-3d-md);
+  align-items: center;
+  flex-shrink: 0;
+  margin-bottom: calc(5px + env(safe-area-inset-bottom));
+}
+.chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 8px 6px;
+  font-size: 14.5px;
+  font-family: inherit;
+  color: var(--text-primary);
+}
+.chat-input:focus { outline: none; }
+.chat-input::placeholder { color: var(--text-muted); }
+
+.chat-send-btn {
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  background: var(--color-emerald);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: var(--transition-spring);
+}
+.chat-send-btn:hover {
+  transform: scale(1.05) translateZ(5px);
+  box-shadow: 0 0 10px var(--color-emerald-glow);
+}
+.chat-send-btn:active {
+  transform: scale(0.95);
+}
+.chat-send-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Typing indicator */
+.typing-bubble {
+  align-self: flex-start;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  padding: 14px 18px;
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  width: fit-content;
+  margin-top: 10px;
+}
+.typing-dot {
+  width: 6px; height: 6px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  animation: typing-dot-bounce 1s infinite ease-in-out;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing-dot-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
 </style>
 </head>
 <body>
@@ -950,6 +1127,10 @@ body {
     <button class="tab" id="tab-stats" onclick="nav('stats')">
       <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Stats
+    </button>
+    <button class="tab" id="tab-ai" onclick="nav('ai')">
+      <svg viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+      AI Coach
     </button>
   </nav>
 </div>
@@ -1023,7 +1204,7 @@ function toast(msg) {
 function nav(p) {
   page = p;
   expanded = {};
-  ['today','week','log','stats'].forEach(id => {
+  ['today','week','log','stats','ai'].forEach(id => {
     document.getElementById('tab-'+id).classList.toggle('active', id === p);
   });
   render();
@@ -1036,10 +1217,15 @@ function render() {
   if (page === 'today') el.innerHTML = renderToday();
   else if (page === 'week') el.innerHTML = renderWeek();
   else if (page === 'log') el.innerHTML = renderLog();
-  else el.innerHTML = renderStats();
+  else if (page === 'stats') el.innerHTML = renderStats();
+  else el.innerHTML = renderAI();
   
   // Initialize 3D tilts for newly rendered elements
   init3dCards();
+  
+  if (page === 'ai') {
+    scrollChat();
+  }
 }
 
 /* ── TODAY ── */
@@ -1341,6 +1527,207 @@ function handleWeight(val) {
   set('weight_w'+week, val);
   const pill = document.getElementById('dpill');
   if (pill) { const d = weightDelta(val); pill.className='delta-pill '+d.cls; pill.textContent=d.text; }
+}
+
+/* ── AI COACH SERVICES ── */
+const defaultAIChat = [
+  { sender: 'bot', text: 'Hello! I am your Arzu AI Fitness Coach. I can help analyze your weight progress, compliance logs, body measurements, and strength trends. Ask me anything about your dashboard data!' }
+];
+
+function getAIChat() {
+  const history = get('ai_chat');
+  if (!history || !Array.isArray(history)) return defaultAIChat;
+  return history;
+}
+
+function renderAI() {
+  const chatHistory = getAIChat();
+  
+  let h = `<div class="page-header">
+    <h1>AI Fitness Coach</h1>
+    <div class="subtitle">Personalized feedback based on your logs</div>
+  </div>`;
+
+  h += `<div class="chat-container">
+    <div class="chat-messages" id="chat-msg-list">`;
+  
+  chatHistory.forEach(msg => {
+    h += `<div class="chat-bubble ${msg.sender}">
+      ${msg.text}
+    </div>`;
+  });
+  
+  h += `</div>`;
+
+  // Suggestion chips
+  h += `<div class="chips-row">
+    <button class="suggest-chip" onclick="clickSuggestChip('📊 Analyze my progress')">📊 Analyze my progress</button>
+    <button class="suggest-chip" onclick="clickSuggestChip('🥗 Check my target calories')">🥗 Check my target calories</button>
+    <button class="suggest-chip" onclick="clickSuggestChip('🏋️‍♂️ Show my strength logs')">🏋️‍♂️ Show my strength logs</button>
+    <button class="suggest-chip" onclick="clickSuggestChip('💡 Tips for fat loss')">💡 Tips for fat loss</button>
+  </div>`;
+
+  // Input area
+  h += `<div class="chat-input-area">
+    <input type="text" class="chat-input" id="chat-user-input" placeholder="Ask your coach a question..." onkeydown="if(event.key === 'Enter') handleAISend()">
+    <button class="chat-send-btn" onclick="handleAISend()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div></div>`;
+
+  return h;
+}
+
+function handleAISend() {
+  const input = document.getElementById('chat-user-input');
+  if (input && input.value.trim()) {
+    sendAIChat(input.value);
+    input.value = '';
+  }
+}
+
+function clickSuggestChip(text) {
+  sendAIChat(text);
+}
+
+function sendAIChat(text) {
+  if (!text || !text.trim()) return;
+  const t = text.trim();
+  const chat = [...getAIChat()];
+  chat.push({ sender: 'user', text: t });
+  set('ai_chat', chat);
+  render(); // Display user message
+  
+  // Append typing indicator
+  const msgDiv = document.getElementById('chat-msg-list');
+  if (msgDiv) {
+    const indicator = document.createElement('div');
+    indicator.className = 'typing-bubble';
+    indicator.id = 'chat-typing-indicator';
+    indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    msgDiv.appendChild(indicator);
+    scrollChat();
+  }
+  
+  // Response simulation delay
+  setTimeout(() => {
+    const indicator = document.getElementById('chat-typing-indicator');
+    if (indicator) indicator.remove();
+    
+    const botText = askAI(t);
+    const updatedChat = [...getAIChat()];
+    updatedChat.push({ sender: 'bot', text: botText });
+    set('ai_chat', updatedChat);
+    render();
+  }, 800);
+}
+
+function scrollChat() {
+  const msgDiv = document.getElementById('chat-msg-list');
+  if (msgDiv) {
+    msgDiv.scrollTop = msgDiv.scrollHeight;
+  }
+}
+
+function askAI(text) {
+  const q = text.toLowerCase();
+  const w = week;
+  const wv = get('weight_w' + w);
+  
+  let doneTotal = 0, itemsTotal = 0;
+  for (let d = 0; d < 7; d++) {
+    doneTotal += checksDone(w, d);
+    itemsTotal += DAYS[d].items.length;
+  }
+  
+  if (q.includes('progress') || q.includes('track') || q.includes('analyze') || q.includes('compliance')) {
+    const startW = 66.0;
+    let totalChange = 'no weight change logged yet';
+    let lost = 0;
+    
+    // Find the latest logged weight to calculate total lost
+    let latestW = null;
+    for (let ww = w; ww >= 1; ww--) {
+      const loggedVal = get('weight_w' + ww);
+      if (loggedVal) {
+        latestW = parseFloat(loggedVal);
+        break;
+      }
+    }
+    
+    if (latestW) {
+      lost = startW - latestW;
+      totalChange = lost > 0 ? `${lost.toFixed(1)} kg lost` : `${Math.abs(lost).toFixed(1)} kg gained`;
+    }
+    
+    const sleep = get('nn_slp_' + w);
+    const refeed = get('nn_ref_' + w);
+    const overload = get('nn_ovl_' + w);
+    
+    return `📊 **Progress Analysis (Week ${w})**:<br><br>` +
+           `- **Weight Status**: Current: ${wv ? wv + ' kg' : 'Not logged yet'} (Target: ${WEEK_TARGETS[w-1]} kg). ` +
+           `Start: 66.0 kg (Total change: ${totalChange}).<br>` +
+           `- **Checklist Compliance**: You've checked off **${doneTotal}/${itemsTotal}** tasks this week (${pct(doneTotal, itemsTotal)}% done!).<br>` +
+           `- **Non-Negotiables**: Sleep average: ${sleep === 'yes' ? '✓ Yes' : sleep === 'no' ? '✗ No' : 'Not logged'}, ` +
+           `Refeed on plan: ${refeed === 'yes' ? '✓ Yes' : refeed === 'no' ? '✗ No' : 'Not logged'}, ` +
+           `Overload logged: ${overload === 'yes' ? '✓ Yes' : overload === 'no' ? '✗ No' : 'Not logged'}.<br><br>` +
+           `Tip: Keep consistency high! A checklist percentage above 85% guarantees steady fat loss. 💪`;
+  }
+  
+  if (q.includes('calorie') || q.includes('calories') || q.includes('food') || q.includes('eat') || q.includes('diet')) {
+    let breakdown = `🥗 **Week ${w} Calorie Targets**:<br><br>`;
+    DAYS.forEach(day => {
+      breakdown += `- **${day.name}** (${day.typeLabel}): **${day.cal} kcal**<br>`;
+    });
+    breakdown += `<br>Make sure you hit your protein target of **145g+ every day** (refeed Sunday 150g+)! 🥩`;
+    return breakdown;
+  }
+  
+  if (q.includes('strength') || q.includes('lift') || q.includes('bench') || q.includes('squat') || q.includes('overload') || q.includes('exercise')) {
+    const bench = get('sb_' + w);
+    const squat = get('ss_' + w);
+    const pullup = get('sp_' + w);
+    const row = get('sr_' + w);
+    const curl = get('sc_' + w);
+    const calf = get('scf_' + w);
+    
+    return `🏋️‍♂️ **Week ${w} Strength Logs**:<br><br>` +
+           `- **Bench press**: ${bench || '—'}<br>` +
+           `- **Barbell squat**: ${squat || '—'}<br>` +
+           `- **Pull-up / lat pulldown**: ${pullup || '—'}<br>` +
+           `- **Seated cable row**: ${row || '—'}<br>` +
+           `- **Barbell curl**: ${curl || '—'}<br>` +
+           `- **Standing calf raise**: ${calf || '—'}<br><br>` +
+           `Remember to log reps and weights under the **Log** tab to track progressive overload week-over-week! 📈`;
+  }
+  
+  if (q.includes('weight') || q.includes('weigh') || q.includes('target') || q.includes('goal')) {
+    const startW = 66.0;
+    const targetW = WEEK_TARGETS[w-1];
+    
+    return `⚖️ **Weight Progress Details**:<br><br>` +
+           `- **Starting Baseline**: ${startW} kg<br>` +
+           `- **Week ${w} Target**: ${targetW} kg<br>` +
+           `- **Your Current Log**: ${wv ? wv + ' kg' : 'Not entered yet'}<br>` +
+           `- **Goal Weight (Week 7)**: 63.0 kg<br><br>` +
+           `Tip: Weigh yourself on Monday mornings under identical conditions (fasted) for the most accurate trend comparison! 📏`;
+  }
+  
+  if (q.includes('tip') || q.includes('advice') || q.includes('help') || q.includes('how to') || q.includes('recommend')) {
+    return `💡 **Fat Loss Tips from your AI Coach**:<br><br>` +
+           `1. 💧 **Hydration**: Drink 2.5L (rest days) to 3.8L (training days) of clean water to boost metabolism.<br>` +
+           `2. 🥩 **Protein Intake**: Hit 145g+ of protein daily. Protein has the highest thermic effect of food and preserves muscle.<br>` +
+           `3. 😴 **Sleep Hygiene**: Get 7-8 hours. Lack of sleep spikes cortisol which drives visceral fat storage.<br>` +
+           `4. 🚫🥤 **No Liquid Calories**: Eliminate sodas, juices, and sweetened coffees. Eat your calories instead of drinking them.<br>` +
+           `5. 🏃‍♂️ **Active Recovery**: Cardio (40 min) on rest days keeps NEAT levels high without overtaxing your recovery.`;
+  }
+  
+  // Custom Fallback response referencing local state
+  return `🤖 **Hello! I parsed your query: "${text}"**<br><br>` +
+         `Here is a quick snapshot of your Week ${w} stats:<br>` +
+         `- **Weight**: ${wv ? wv + ' kg' : 'Not logged yet'} (Week target: ${WEEK_TARGETS[w-1]} kg)<br>` +
+         `- **Checklist progress**: ${doneTotal}/${itemsTotal} tasks completed (${pct(doneTotal, itemsTotal)}%)<br><br>` +
+         `Try asking me specific questions like: *'How is my progress?'*, *'What are my calorie targets?'*, *'Show my strength log'*, or click the suggestion chips below! 👇`;
 }
 
 /* ── 3D Card Tilt Initialization ── */
