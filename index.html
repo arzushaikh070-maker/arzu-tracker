@@ -958,25 +958,25 @@ body {
 <script>
 /* ── DATA ── */
 const DAYS = [
-  { name:'Monday',   short:'Mon', type:'training',    typeLabel:'Training day',    session:'Chest · Shoulders · Triceps · Abs', cal:'2,200', items:['Workout completed','Calories on target (2,200 kcal)','Protein 145 g or more','Water 3.8 L','No liquid calories','7+ hours sleep'] },
-  { name:'Tuesday',  short:'Tue', type:'rest',         typeLabel:'Rest day',        session:'Cardio 40 min',                     cal:'1,850', items:['Cardio completed (40 min)','Calories on target (1,850 kcal)','Protein 145 g or more','Water 2.5 L','No liquid calories','7+ hours sleep'] },
-  { name:'Wednesday',short:'Wed', type:'training',    typeLabel:'Training day',    session:'Legs · Back · Biceps · Calves',     cal:'2,200', items:['Workout completed','Calories on target (2,200 kcal)','Protein 145 g or more','Water 3.8 L','No liquid calories','7+ hours sleep'] },
-  { name:'Thursday', short:'Thu', type:'rest',         typeLabel:'Rest day',        session:'Cardio 40 min',                     cal:'1,850', items:['Cardio completed (40 min)','Calories on target (1,850 kcal)','Protein 145 g or more','Water 2.5 L','No liquid calories','7+ hours sleep'] },
-  { name:'Friday',   short:'Fri', type:'training',    typeLabel:'Training day',    session:'Chest · Shoulders · Triceps · Abs', cal:'2,200', items:['Workout completed','Calories on target (2,200 kcal)','Protein 145 g or more','Water 3.8 L','No liquid calories','7+ hours sleep'] },
-  { name:'Saturday', short:'Sat', type:'training',    typeLabel:'Training day',    session:'Legs · Back · Biceps · Calves',     cal:'2,200', items:['Workout completed','Calories on target (2,200 kcal)','Protein 145 g or more','Water 3.8 L','No liquid calories','7+ hours sleep'] },
-  { name:'Sunday',   short:'Sun', type:'active-rest', typeLabel:'Active rest',     session:'30-min walk + weekly refeed',       cal:'2,100', items:['30-min walk done','Refeed on plan (2,100 kcal)','Protein 150 g or more','Water 2.5 L','No liquid calories','7+ hours sleep'] }
+  { name:'Monday',   short:'Mon', type:'training',    typeLabel:'Training day 💪',    session:'Chest · Shoulders · Triceps · Abs', cal:'2,200', items:['Workout completed 🏋️‍♂️','Calories on target (2,200 kcal) 🥗','Protein 145 g or more 🥩','Water 3.8 L 💧','No liquid calories 🚫🥤','7+ hours sleep 😴'] },
+  { name:'Tuesday',  short:'Tue', type:'rest',         typeLabel:'Rest day 🧘',        session:'Cardio 40 min',                     cal:'1,850', items:['Cardio completed (40 min) 🏃‍♂️','Calories on target (1,850 kcal) 🥗','Protein 145 g or more 🥩','Water 2.5 L 💧','No liquid calories 🚫🥤','7+ hours sleep 😴'] },
+  { name:'Wednesday',short:'Wed', type:'training',    typeLabel:'Training day 💪',    session:'Legs · Back · Biceps · Calves',     cal:'2,200', items:['Workout completed 🏋️‍♂️','Calories on target (2,200 kcal) 🥗','Protein 145 g or more 🥩','Water 3.8 L 💧','No liquid calories 🚫🥤','7+ hours sleep 😴'] },
+  { name:'Thursday', short:'Thu', type:'rest',         typeLabel:'Rest day 🧘',        session:'Cardio 40 min',                     cal:'1,850', items:['Cardio completed (40 min) 🏃‍♂️','Calories on target (1,850 kcal) 🥗','Protein 145 g or more 🥩','Water 2.5 L 💧','No liquid calories 🚫🥤','7+ hours sleep 😴'] },
+  { name:'Friday',   short:'Fri', type:'training',    typeLabel:'Training day 💪',    session:'Chest · Shoulders · Triceps · Abs', cal:'2,200', items:['Workout completed 🏋️‍♂️','Calories on target (2,200 kcal) 🥗','Protein 145 g or more 🥩','Water 3.8 L 💧','No liquid calories 🚫🥤','7+ hours sleep 😴'] },
+  { name:'Saturday', short:'Sat', type:'training',    typeLabel:'Training day 💪',    session:'Legs · Back · Biceps · Calves',     cal:'2,200', items:['Workout completed 🏋️‍♂️','Calories on target (2,200 kcal) 🥗','Protein 145 g or more 🥩','Water 3.8 L 💧','No liquid calories 🚫🥤','7+ hours sleep 😴'] },
+  { name:'Sunday',   short:'Sun', type:'active-rest', typeLabel:'Active rest 🚶',     session:'30-min walk + weekly refeed',       cal:'2,100', items:['30-min walk done 🚶','Refeed on plan (2,100 kcal) 🥞','Protein 150 g or more 🥩','Water 2.5 L 💧','No liquid calories 🚫🥤','7+ hours sleep 😴'] }
 ];
 
 const WEEK_TARGETS = [65.5, 65.1, 64.7, 64.2, 63.8, 63.4, 63.0];
 
 const MILESTONES = [
-  'Baseline measurements recorded (Week 1)',
-  'Week 2 photos taken',
-  'Week 3 measurements done',
-  'Week 4 mid-check completed',
-  'Week 6 final photos taken',
-  'Goal weight reached (63 kg)',
-  'Transition to maintenance started'
+  'Baseline measurements recorded (Week 1) 📏',
+  'Week 2 photos taken 📸',
+  'Week 3 measurements done 📐',
+  'Week 4 mid-check completed ⚖️',
+  'Week 6 final photos taken 📸',
+  'Goal weight reached (63 kg) 🎯',
+  'Transition to maintenance started 🚀'
 ];
 
 /* ── STATE ── */
@@ -1195,9 +1195,9 @@ function renderLog() {
 
   /* Measurements */
   h += `<div class="section">
-    <div class="section-label">Body measurements (cm)</div>
+    <div class="section-label">Body measurements (cm) 📏</div>
     <div class="card card-3d">`;
-  [['mw_'+w,'Waist at navel'],['mh_'+w,'Hips at widest'],['mc_'+w,'Chest'],['ma_'+w,'Right arm (flexed)'],['mt_'+w,'Right thigh']].forEach(([k,lbl]) => {
+  [['mw_'+w,'Waist at navel 📏'],['mh_'+w,'Hips at widest 🍑'],['mc_'+w,'Chest 📐'],['ma_'+w,'Right arm (flexed) 💪'],['mt_'+w,'Right thigh 🦵']].forEach(([k,lbl]) => {
     h += `<div class="log-row">
       <span class="lr-label">${lbl}</span>
       <input class="log-input" type="number" inputmode="decimal" placeholder="— cm" value="${get(k)}" oninput="set('${k}',this.value)">
@@ -1207,9 +1207,9 @@ function renderLog() {
 
   /* Strength */
   h += `<div class="section">
-    <div class="section-label">Strength log</div>
+    <div class="section-label">Strength log 🏋️‍♂️</div>
     <div class="card card-3d">`;
-  [['sb_'+w,'Bench press'],['ss_'+w,'Barbell squat'],['sp_'+w,'Pull-up / lat pulldown'],['sr_'+w,'Seated cable row'],['sc_'+w,'Barbell curl'],['scf_'+w,'Standing calf raise']].forEach(([k,lbl]) => {
+  [['sb_'+w,'Bench press 🏋️‍♂️'],['ss_'+w,'Barbell squat 🦵'],['sp_'+w,'Pull-up / lat pulldown 🧗‍♂️'],['sr_'+w,'Seated cable row 🚣‍♂️'],['sc_'+w,'Barbell curl 💪'],['scf_'+w,'Standing calf raise 🦶']].forEach(([k,lbl]) => {
     h += `<div class="log-row">
       <span class="lr-label">${lbl}</span>
       <input class="log-input" type="text" placeholder="kg × reps" value="${get(k)}" oninput="set('${k}',this.value)" style="width:130px">
@@ -1219,9 +1219,9 @@ function renderLog() {
 
   /* Non-negotiables */
   h += `<div class="section">
-    <div class="section-label">Weekly non-negotiables</div>
+    <div class="section-label">Weekly non-negotiables 🚫</div>
     <div class="card card-3d">`;
-  [['nn_liq_'+w,'No liquid calories all week'],['nn_slp_'+w,'7+ hrs sleep (average)'],['nn_ref_'+w,'Sunday refeed on plan'],['nn_ovl_'+w,'Progressive overload logged']].forEach(([k,lbl]) => {
+  [['nn_liq_'+w,'No liquid calories all week 🚫🥤'],['nn_slp_'+w,'7+ hrs sleep (average) 😴'],['nn_ref_'+w,'Sunday refeed on plan 🥞'],['nn_ovl_'+w,'Progressive overload logged 📈']].forEach(([k,lbl]) => {
     const v = get(k);
     h += `<div class="log-row">
       <span class="lr-label">${lbl}</span>
