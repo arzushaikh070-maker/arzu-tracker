@@ -1,0 +1,26 @@
+{
+  "name": "arzu-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arzushaikh070-maker/arzu-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arzushaikh070-maker/arzu-tracker/issues"
+  },
+  "homepage": "https://github.com/arzushaikh070-maker/arzu-tracker#readme",
+  "dependencies": {
+    "docx": "^9.7.1"
+  }
+}
