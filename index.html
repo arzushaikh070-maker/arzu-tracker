@@ -1,2172 +1,1171 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#080C14">
-  <title>CompareAI · Describe your requirements, AI finds the best option</title>
-  
-  <!-- Font import -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
-  <!-- CSS Stylesheet -->
+  <meta name="apple-mobile-web-app-title" content="Arzu Tracker">
+  <meta name="theme-color" content="#1D9E75">
+  <title>Arzu · Fat Loss Tracker</title>
   <style>
-    /* ─── DESIGN TOKENS (MASTER.md) ─── */
     :root {
-      --color-bg-base: #080C14;
-      --color-bg-surface: #111625;
-      --color-glass: rgba(255, 255, 255, 0.05);
-      --color-glass-hover: rgba(255, 255, 255, 0.08);
-      --color-primary: #1A56DB;
-      --color-accent: #7C3AED;
-      --color-accent-glow: rgba(124, 58, 237, 0.25);
-      --color-border-glass: rgba(255, 255, 255, 0.1);
-      --color-border-focus: rgba(124, 58, 237, 0.5);
-      --color-text-primary: #F9FAFB;
-      --color-text-secondary: #E5E7EB;
-      --color-text-muted: #9CA3AF;
-      --color-success: #10B981;
-      --color-warning: #F59E0B;
-      
-      --font-headings: 'Outfit', -apple-system, sans-serif;
-      --font-body: 'Inter', -apple-system, sans-serif;
-      --font-code: 'JetBrains Mono', monospace;
-      
-      --radius-sm: 8px;
-      --radius-md: 16px;
-      --radius-lg: 24px;
-      --radius-full: 9999px;
-      
-      --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-medium: 250ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-slow: 450ms cubic-bezier(0.16, 1, 0.3, 1);
+      --green: #1D9E75;
+      --green-light: #EAF3DE;
+      --green-dark: #3B6D11;
+      --blue: #185FA5;
+      --blue-light: #E6F1FB;
+      --amber: #BA7517;
+      --amber-light: #FAEEDA;
+      --red: #A32D2D;
+      --red-light: #FCEBEB;
+      --border: #e2e0da;
+      --bg: #f5f4f1;
+      --card: #ffffff;
+      --text: #1a1a18;
+      --muted: #6b6966;
+      --faint: #a09e9b;
+      --safe-top: env(safe-area-inset-top);
+      --safe-bot: env(safe-area-inset-bottom);
     }
 
-    /* ─── RESET & BASE STYLES ─── */
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
-      background-color: var(--color-bg-base);
-      color: var(--color-text-primary);
-      font-family: var(--font-body);
-      font-size: 16px;
-      overflow-x: hidden;
-      min-height: 100vh;
-      line-height: 1.5;
-    }
-
-    /* Heading Defaults */
-    h1, h2, h3, h4, h5, h6 {
-      font-family: var(--font-headings);
-      line-height: 1.2;
-    }
-
-    /* Focus Rings for Accessibility */
-    button:focus-visible,
-    input:focus-visible,
-    select:focus-visible,
-    textarea:focus-visible,
-    a:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-
-    /* Glowing Backdrop Blobs */
-    .glow-blob {
-      position: absolute;
-      width: 40vw;
-      height: 40vw;
-      border-radius: 50%;
-      filter: blur(100px);
-      z-index: -1;
-      opacity: 0.15;
-      pointer-events: none;
-    }
-    .blob-1 {
-      top: -10vw;
-      left: -10vw;
-      background: var(--color-primary);
-    }
-    .blob-2 {
-      top: 20vh;
-      right: -10vw;
-      background: var(--color-accent);
-    }
-
-    /* ─── NAVIGATION BAR ─── */
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(8, 12, 20, 0.7);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--color-border-glass);
-      transition: var(--transition-medium);
-    }
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-headings);
-      font-weight: 800;
-      font-size: 22px;
-      color: var(--color-text-primary);
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .logo-icon {
-      width: 28px;
-      height: 28px;
-      fill: none;
-      stroke: var(--color-accent);
-      stroke-width: 2.5;
-    }
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 4px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--color-border-glass);
-    }
-    .tab-btn {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--color-text-muted);
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 14px;
-      padding: 8px 18px;
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      transition: var(--transition-fast);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tab-btn:hover {
-      color: var(--color-text-primary);
-    }
-    .tab-btn.active {
-      background: var(--color-accent);
-      color: var(--color-text-primary);
-      box-shadow: 0 4px 12px var(--color-accent-glow);
-    }
-
-    /* ─── MAIN LAYOUT WRAPPER ─── */
-    .app-main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 24px 80px 24px;
-      min-height: calc(100vh - 73px);
-    }
-    .tab-view {
-      display: none;
-      animation: fadeIn var(--transition-medium) forwards;
-    }
-    .tab-view.active {
-      display: block;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── TAB 1: SEARCH PAGE ─── */
-    /* Hero Area */
-    .hero-section {
-      text-align: center;
-      margin-bottom: 40px;
-      position: relative;
-    }
-    .hero-title {
-      font-family: var(--font-headings);
-      font-size: 48px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #FFF 40%, var(--color-accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero-subtitle {
-      color: var(--color-text-muted);
-      font-size: 18px;
-      max-width: 600px;
-      margin: 0 auto 30px auto;
-    }
-
-    /* Holographic SVG AI Orb */
-    .ai-orb-container {
-      width: 160px;
-      height: 160px;
-      margin: 0 auto 24px auto;
-      position: relative;
-    }
-    .ai-orb {
-      width: 100%;
+    html {
       height: 100%;
-      filter: drop-shadow(0 0 25px var(--color-accent-glow));
-    }
-    .orb-glow {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      top: 30px;
-      left: 30px;
-      background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
-      filter: blur(10px);
-      z-index: -1;
-      opacity: 0.8;
-      animation: pulseGlow 4s infinite ease-in-out;
-    }
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.5; transform: scale(0.9); }
-      50% { opacity: 0.9; transform: scale(1.1); }
     }
 
-    /* AI Orb SVG Animations */
-    .orb-morph {
-      fill: none;
-      stroke: url(#orb-gradient);
-      stroke-width: 2;
-      transform-origin: center;
-      transition: var(--transition-slow);
-    }
-    /* States for AI Orb */
-    .ai-orb.idle .orb-morph {
-      animation: orbIdle 8s infinite linear;
-    }
-    .ai-orb.thinking .orb-morph {
-      animation: orbThinking 2s infinite ease-in-out;
-      stroke: url(#orb-gradient-thinking);
-      stroke-width: 3.5;
-    }
-    .ai-orb.success .orb-morph {
-      animation: orbSuccess 5s infinite ease-in-out;
-      stroke: #10B981;
-      stroke-width: 2;
+    body {
+      height: 100%;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      color: var(--text);
+      overscroll-behavior: none;
+      -webkit-font-smoothing: antialiased;
     }
 
-    @keyframes orbIdle {
-      0% { transform: rotate(0deg) scale(1); d: path("M 80 20 Q 140 40 140 80 T 80 140 Q 20 120 20 80 T 80 20"); }
-      50% { transform: rotate(180deg) scale(1.05); d: path("M 80 22 Q 130 50 135 80 T 80 138 Q 25 125 25 80 T 80 22"); }
-      100% { transform: rotate(360deg) scale(1); d: path("M 80 20 Q 140 40 140 80 T 80 140 Q 20 120 20 80 T 80 20"); }
-    }
-    @keyframes orbThinking {
-      0% { transform: rotate(0deg) scale(1); d: path("M 80 15 Q 150 30 145 80 T 80 145 Q 15 130 15 80 T 80 15"); }
-      25% { transform: rotate(90deg) scale(0.92); d: path("M 80 25 Q 135 25 140 80 T 80 135 Q 25 135 20 80 T 80 25"); }
-      50% { transform: rotate(180deg) scale(1.08); d: path("M 80 12 Q 145 45 138 80 T 80 148 Q 22 115 12 80 T 80 12"); }
-      75% { transform: rotate(270deg) scale(0.95); d: path("M 80 25 Q 125 35 145 80 T 80 130 Q 35 125 15 80 T 80 25"); }
-      100% { transform: rotate(360deg) scale(1); d: path("M 80 15 Q 150 30 145 80 T 80 145 Q 15 130 15 80 T 80 15"); }
-    }
-    @keyframes orbSuccess {
-      0%, 100% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.03); }
-    }
-
-    /* Command Palette Search Box */
-    .search-wrapper {
-      max-width: 680px;
-      margin: 0 auto 32px auto;
-      position: relative;
-    }
-    .search-bar {
-      width: 100%;
-      background: var(--color-glass);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--color-border-glass);
-      border-radius: var(--radius-md);
-      padding: 16px 20px 16px 54px;
-      color: var(--color-text-primary);
-      font-family: var(--font-body);
-      font-size: 16px;
-      outline: none;
-      transition: var(--transition-medium);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-    }
-    .search-bar:focus {
-      border-color: var(--color-border-focus);
-      background: var(--color-glass-hover);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 16px var(--color-accent-glow);
-    }
-    .search-icon {
-      position: absolute;
-      left: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 22px;
-      height: 22px;
-      fill: none;
-      stroke: var(--color-text-muted);
-      stroke-width: 2;
-      pointer-events: none;
-    }
-    .search-bar:focus ~ .search-icon {
-      stroke: var(--color-accent);
-    }
-    .keyboard-shortcut {
-      position: absolute;
-      right: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: var(--font-code);
-      font-size: 11px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--color-border-glass);
-      padding: 4px 6px;
-      border-radius: 4px;
-      color: var(--color-text-muted);
-      pointer-events: none;
-    }
-    .suggestion-chips {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-    .chip {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--color-border-glass);
-      color: var(--color-text-muted);
-      font-size: 12.5px;
-      padding: 6px 14px;
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      transition: var(--transition-fast);
-    }
-    .chip:hover {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--color-text-primary);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* ─── NLP PROCESSING PANEL ─── */
-    .nlp-panel {
-      max-width: 680px;
-      margin: 0 auto 40px auto;
-      background: rgba(124, 58, 237, 0.03);
-      border: 1px dashed var(--color-border-focus);
-      border-radius: var(--radius-md);
-      padding: 20px;
-      display: none;
-    }
-    .nlp-title {
-      font-family: var(--font-headings);
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--color-accent);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .nlp-title-icon {
-      width: 16px;
-      height: 16px;
-      fill: none;
-      stroke: var(--color-accent);
-      stroke-width: 2.5;
-    }
-    .nlp-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .nlp-chip {
-      font-family: var(--font-code);
-      font-size: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--color-border-glass);
-      padding: 6px 10px;
-      border-radius: 6px;
-      color: var(--color-text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      animation: scaleIn 200ms ease-out;
-    }
-    @keyframes scaleIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .nlp-chip-label {
-      color: var(--color-accent);
-      font-weight: 500;
-    }
-
-    /* ─── COMPARISON CARDS / GRID ─── */
-    .results-container {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-      margin-top: 40px;
-    }
-    .result-card {
-      background: var(--color-glass);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--color-border-glass);
-      border-radius: var(--radius-md);
-      padding: 24px;
+    /* ── App shell ── */
+    #app {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      position: relative;
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, box-shadow 0.25s;
-      cursor: pointer;
-      perspective: 1000px;
-    }
-    .result-card:hover {
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-      transform: translateY(-4px) rotateX(3deg) rotateY(3deg);
-    }
-    .result-card.rank-1 {
-      border-color: var(--color-border-focus);
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%);
-    }
-    .result-card.rank-1::before {
-      content: 'AI PICK';
-      position: absolute;
-      top: -10px;
-      right: 24px;
-      background: var(--color-accent);
-      color: white;
-      font-family: var(--font-headings);
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: var(--radius-full);
-      letter-spacing: 0.05em;
-      box-shadow: 0 4px 10px var(--color-accent-glow);
+      height: 100%;
     }
 
-    /* Card Header */
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
+    #screen {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-top: max(env(safe-area-inset-top), 0px);
+      padding-bottom: calc(80px + env(safe-area-inset-bottom));
     }
-    .rank-indicator {
+
+    /* ── Tab bar ── */
+    #tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(245, 244, 241, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom);
+      z-index: 200;
+    }
+
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 8px;
+      gap: 3px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--faint);
+      font-size: 10px;
+      font-family: inherit;
+      font-weight: 500;
+      letter-spacing: .01em;
+      transition: color .15s;
+      -webkit-appearance: none;
+    }
+
+    .tab.active {
+      color: var(--green);
+    }
+
+    .tab svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      padding: 18px 18px 10px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+    }
+
+    .page-header .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Sections ── */
+    .section {
+      padding: 0 14px;
+      margin-bottom: 22px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+      padding: 0 2px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 0.5px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* ── Stat tiles ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-tile {
+      background: var(--card);
+      border-radius: 14px;
+      border: 0.5px solid var(--border);
+      padding: 14px 14px 12px;
+    }
+
+    .stat-tile.accent {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .stat-tile.accent .s-label,
+    .stat-tile.accent .s-sub {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .stat-tile.accent .s-value {
+      color: #fff;
+    }
+
+    .s-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 3px;
+      font-weight: 500;
+    }
+
+    .s-value {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .s-sub {
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 3px;
+    }
+
+    /* ── Day progress bar ── */
+    .day-prog-track {
+      height: 3px;
+      background: #ece9e3;
+    }
+
+    .day-prog-fill {
+      height: 3px;
+      background: var(--green);
+      transition: width .35s ease;
+    }
+
+    /* ── Checklist ── */
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: background .1s;
+      -webkit-appearance: none;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .check-row:active {
+      background: var(--bg);
+    }
+
+    .check-row+.check-row {
+      border-top: 0.5px solid #f0ede8;
+    }
+
+    .chk-box {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      border: 1.5px solid #ccc;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--color-border-glass);
-      border-radius: 50%;
-      font-family: var(--font-headings);
-      font-weight: 700;
+      transition: all .15s;
+      background: #fff;
+    }
+
+    .chk-box.checked {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .chk-box svg {
+      width: 14px;
+      height: 14px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+
+    .chk-box.checked svg {
+      opacity: 1;
+    }
+
+    .chk-label {
+      font-size: 15.5px;
+      color: var(--text);
+      flex: 1;
+      line-height: 1.3;
+    }
+
+    .chk-label.done {
+      color: var(--faint);
+      text-decoration: line-through;
+    }
+
+    /* ── Log rows ── */
+    .log-row {
+      display: flex;
+      align-items: center;
+      padding: 13px 16px;
+      gap: 10px;
+    }
+
+    .log-row+.log-row {
+      border-top: 0.5px solid #f0ede8;
+    }
+
+    .log-row .lr-label {
       font-size: 15px;
-      color: var(--color-text-muted);
-    }
-    .rank-1 .rank-indicator {
-      background: var(--color-accent);
-      color: white;
-      border-color: var(--color-accent);
-    }
-    .product-meta {
       flex: 1;
     }
-    .product-title {
-      font-family: var(--font-headings);
+
+    .log-row .lr-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .log-input {
+      width: 120px;
+      padding: 8px 10px;
+      font-size: 15px;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      text-align: right;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .log-input:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(29, 158, 117, .12);
+    }
+
+    .log-select {
+      padding: 8px 10px;
+      font-size: 15px;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-appearance: none;
+      appearance: none;
+      text-align: right;
+      min-width: 100px;
+    }
+
+    .log-select:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+
+    /* ── Weight input ── */
+    .weight-hero {
+      padding: 20px 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .weight-num-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .weight-input {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      width: 120px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .weight-input:focus {
+      outline: none;
+    }
+
+    .weight-unit {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .delta-pill {
+      margin-left: auto;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      background: #eee;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .delta-pill.good {
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
+    .delta-pill.bad {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    /* ── Textarea ── */
+    .notes-area {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      line-height: 1.5;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      resize: none;
+      min-height: 90px;
+      -webkit-appearance: none;
+    }
+
+    .notes-area:focus {
+      outline: none;
+    }
+
+    .notes-area::placeholder {
+      color: var(--faint);
+    }
+
+    /* ── Week pills ── */
+    .week-strip {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding: 0 14px 16px;
+      scrollbar-width: none;
+    }
+
+    .week-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .week-pill {
+      flex-shrink: 0;
+      padding: 8px 18px;
+      border-radius: 22px;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      -webkit-appearance: none;
+      font-family: inherit;
+    }
+
+    .week-pill.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Target banner ── */
+    .target-banner {
+      margin: 0 14px 16px;
+      background: var(--green);
+      border-radius: 16px;
+      padding: 16px 18px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tb-label {
+      font-size: 11px;
+      opacity: .75;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 3px;
+    }
+
+    .tb-val {
       font-size: 22px;
       font-weight: 700;
-      color: var(--color-text-primary);
-      margin-bottom: 4px;
+      letter-spacing: -0.5px;
     }
-    .product-category {
-      font-size: 12px;
-      text-transform: uppercase;
-      color: var(--color-text-muted);
-      letter-spacing: 0.05em;
+
+    .tb-arrow {
+      font-size: 24px;
+      opacity: .4;
     }
-    .score-container {
+
+    /* ── Day accordion ── */
+    .day-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 0.5px solid var(--border);
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .day-head {
       display: flex;
       align-items: center;
       gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      background: none;
+      border: none;
+      width: 100%;
+      font-family: inherit;
+      text-align: left;
     }
-    .score-ring {
+
+    .day-head:active {
+      background: var(--bg);
+    }
+
+    .day-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .day-dot.training {
+      background: var(--green);
+    }
+
+    .day-dot.rest {
+      background: var(--blue);
+    }
+
+    .day-dot.active-rest {
+      background: var(--amber);
+    }
+
+    .day-head-text {
+      flex: 1;
+    }
+
+    .dh-name {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dh-type {
+      font-size: 12px;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .dh-type.training {
+      color: var(--green-dark);
+    }
+
+    .dh-type.rest {
+      color: var(--blue);
+    }
+
+    .dh-type.active-rest {
+      color: var(--amber);
+    }
+
+    .day-right {
+      text-align: right;
+    }
+
+    .day-right .dr-frac {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .day-right .dr-pct {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .today-badge {
+      font-size: 10px;
+      background: var(--green);
+      color: #fff;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-weight: 600;
+    }
+
+    /* ── Progress rings ── */
+    .ring-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+    }
+
+    .ring-row+.ring-row {
+      border-top: 0.5px solid #f0ede8;
+    }
+
+    .ring-svg-wrap {
       position: relative;
-      width: 52px;
-      height: 52px;
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
     }
-    .score-circle-bg {
+
+    .ring-svg-wrap svg {
+      width: 46px;
+      height: 46px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
       fill: none;
-      stroke: rgba(255, 255, 255, 0.03);
+      stroke: #eee;
       stroke-width: 4;
     }
-    .score-circle {
+
+    .ring-arc {
       fill: none;
-      stroke: var(--color-accent);
       stroke-width: 4;
       stroke-linecap: round;
-      stroke-dasharray: 100;
-      stroke-dashoffset: 25;
-      transform: rotate(-90deg);
-      transform-origin: center;
-      transition: stroke-dashoffset 1s ease-out;
+      transition: stroke-dashoffset .4s;
     }
-    .rank-1 .score-circle {
-      stroke: var(--color-success);
-    }
-    .score-value {
+
+    .ring-pct {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: var(--font-headings);
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    /* Card Details Layout */
-    .card-body {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-    @media (min-width: 768px) {
-      .card-body {
-        grid-template-columns: 3fr 2fr;
-      }
-    }
-    .reasoning-text {
-      color: var(--color-text-secondary);
-      font-size: 14.5px;
-      line-height: 1.6;
-    }
-    .evidence-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 10px;
-    }
-    .evidence-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--color-text-muted);
-    }
-    .evidence-icon {
-      width: 14px;
-      height: 14px;
-      stroke: var(--color-success);
-      stroke-width: 2.5;
-      fill: none;
-    }
-
-    /* Specs Badges and Pricing */
-    .specs-and-price {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      border-left: 0px solid var(--color-border-glass);
-      padding-left: 0px;
-    }
-    @media (min-width: 768px) {
-      .specs-and-price {
-        border-left: 1px solid var(--color-border-glass);
-        padding-left: 20px;
-      }
-    }
-    .specs-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .spec-badge {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--color-border-glass);
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      color: var(--color-text-muted);
-    }
-    .price-and-action {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .price-label {
-      font-size: 24px;
-      font-family: var(--font-headings);
-      font-weight: 800;
-      color: var(--color-text-primary);
-    }
-    .price-sub {
-      font-size: 12px;
-      color: var(--color-text-muted);
-      display: block;
-    }
-    .action-row {
-      display: flex;
-      gap: 8px;
-    }
-    .save-btn, .expand-btn {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--color-border-glass);
-      border-radius: 8px;
-      width: 38px;
-      height: 38px;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: var(--transition-fast);
-    }
-    .save-btn:hover, .expand-btn:hover {
-      background: var(--color-glass-hover);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-    .save-btn.saved svg {
-      fill: var(--color-accent);
-      stroke: var(--color-accent);
-    }
-    .save-btn svg, .expand-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--color-text-secondary);
-      stroke-width: 2;
-      fill: none;
-      transition: var(--transition-fast);
-    }
-    
-    /* Buy Link Buttons styling */
-    .buy-btn {
-      background: var(--color-primary);
-      border: 1px solid var(--color-primary);
-      border-radius: 8px;
-      color: white;
-      text-decoration: none;
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 13px;
-      padding: 0 16px;
-      height: 38px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition-fast);
-      cursor: pointer;
-    }
-    .buy-btn:hover {
-      background: #1e40af;
-      border-color: #1e40af;
-      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
-    }
-    .buy-btn:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-    
-    .btn-buy-matrix {
-      background: var(--color-primary);
-      border: 1px solid var(--color-primary);
-      border-radius: 6px;
-      color: white;
-      text-decoration: none;
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 12px;
-      padding: 8px 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition-fast);
-    }
-    .btn-buy-matrix:hover {
-      background: #1e40af;
-      border-color: #1e40af;
-      box-shadow: 0 4px 10px rgba(30, 64, 175, 0.3);
-    }
-    .btn-buy-matrix:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-
-    /* ─── DETAILED COMPARE PANEL ─── */
-    .compare-detail-panel {
-      margin-top: 40px;
-      background: rgba(16, 21, 36, 0.6);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--color-border-glass);
-      border-radius: var(--radius-md);
-      padding: 30px;
-      display: none;
-      animation: fadeIn var(--transition-medium) forwards;
-    }
-    .compare-panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-    .compare-title {
-      font-family: var(--font-headings);
-      font-size: 26px;
+      font-size: 10px;
       font-weight: 700;
     }
-    .close-btn {
-      background: transparent;
-      border: none;
-      color: var(--color-text-muted);
-      cursor: pointer;
-      font-size: 24px;
-      transition: var(--transition-fast);
-    }
-    .close-btn:hover {
-      color: var(--color-text-primary);
+
+    .ring-body {
+      flex: 1;
     }
 
-    /* Responsive Comparison Matrix */
-    .compare-matrix-scroll {
-      overflow-x: auto;
-      margin-bottom: 30px;
-    }
-    .compare-matrix {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 14.5px;
-    }
-    .compare-matrix th, .compare-matrix td {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--color-border-glass);
-      min-width: 180px;
-    }
-    .compare-matrix th {
-      font-family: var(--font-headings);
-      font-weight: 700;
-      color: var(--color-text-primary);
-      background: rgba(255, 255, 255, 0.01);
-    }
-    .compare-matrix tr:last-child td {
-      border-bottom: none;
-    }
-    .spec-name-col {
-      color: var(--color-text-muted);
+    .ring-title {
+      font-size: 15px;
       font-weight: 500;
-      min-width: 140px !important;
-    }
-    .diff-highlight {
-      background: rgba(124, 58, 237, 0.05);
     }
 
-    /* Charts Section inside Compare */
-    .compare-charts-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
+    .ring-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 1px;
     }
-    @media (min-width: 768px) {
-      .compare-charts-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    .chart-card {
-      background: var(--color-glass);
-      border: 1px solid var(--color-border-glass);
-      border-radius: var(--radius-md);
-      padding: 20px;
-    }
-    .chart-card-title {
-      font-family: var(--font-headings);
+
+    .ring-frac {
       font-size: 16px;
       font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--color-text-secondary);
-    }
-    .chart-container {
-      position: relative;
-      width: 100%;
-      height: 220px;
-    }
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-      background: transparent;
     }
 
-    /* ─── TAB 2: SAVED WISHLISTS ─── */
-    .wishlist-empty {
-      text-align: center;
-      padding: 60px 24px;
-      color: var(--color-text-muted);
-    }
-    .wishlist-empty svg {
-      width: 48px;
-      height: 48px;
-      stroke: var(--color-text-muted);
-      stroke-width: 1.5;
-      fill: none;
-      margin-bottom: 16px;
-    }
-    .wishlist-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-    @media (min-width: 768px) {
-      .wishlist-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    .wishlist-card {
-      background: var(--color-glass);
-      border: 1px solid var(--color-border-glass);
-      border-radius: var(--radius-md);
-      padding: 20px;
-      position: relative;
-    }
-    .wishlist-meta {
-      margin-bottom: 14px;
-    }
-    .wishlist-title {
-      font-family: var(--font-headings);
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .wishlist-category {
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--color-text-muted);
-      letter-spacing: 0.05em;
-    }
-    .wishlist-price-watch {
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--color-border-glass);
+    /* ── Milestone ── */
+    .milestone-row {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .price-watch-label {
-      font-size: 13px;
-      color: var(--color-text-muted);
-    }
-    /* Switch component */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 44px;
-      height: 24px;
-    }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
       cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(255, 255, 255, 0.1);
-      transition: .3s;
-      border-radius: 34px;
-      border: 1px solid var(--color-border-glass);
-    }
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 3px;
-      bottom: 3px;
-      background-color: var(--color-text-muted);
-      transition: .3s;
-      border-radius: 50%;
-    }
-    input:checked + .slider {
-      background-color: var(--color-accent);
-    }
-    input:checked + .slider:before {
-      transform: translateX(20px);
-      background-color: white;
-    }
-
-    /* ─── TAB 3: ADMIN CONSOLE ─── */
-    .admin-layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-    @media (min-width: 1024px) {
-      .admin-layout {
-        grid-template-columns: 1fr 2fr;
-      }
-    }
-    
-    /* Config Column */
-    .admin-card {
-      background: var(--color-glass);
-      border: 1px solid var(--color-border-glass);
-      border-radius: var(--radius-md);
-      padding: 24px;
-    }
-    .admin-card-title {
-      font-family: var(--font-headings);
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: var(--color-text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .control-group {
-      margin-bottom: 20px;
-    }
-    .control-label {
-      font-size: 13.5px;
-      color: var(--color-text-muted);
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-    .slider-input {
+      background: none;
+      border: none;
       width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      height: 6px;
-      outline: none;
-      -webkit-appearance: none;
-    }
-    .slider-input::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--color-accent);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--color-accent-glow);
-      transition: transform var(--transition-fast);
-    }
-    .slider-input::-webkit-slider-thumb:hover {
-      transform: scale(1.15);
-    }
-
-    /* Product CMS List */
-    .cms-table-wrapper {
-      overflow-x: auto;
-    }
-    .cms-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13.5px;
+      font-family: inherit;
       text-align: left;
     }
-    .cms-table th, .cms-table td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--color-border-glass);
-    }
-    .cms-table th {
-      color: var(--color-text-muted);
-      font-weight: 600;
-    }
-    .cms-table tr:hover {
-      background: rgba(255, 255, 255, 0.01);
-    }
-    .btn-action-cms {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--color-text-muted);
-      padding: 4px;
-      transition: var(--transition-fast);
-    }
-    .btn-action-cms:hover {
-      color: var(--color-accent);
+
+    .milestone-row+.milestone-row {
+      border-top: 0.5px solid #f0ede8;
     }
 
-    /* Modal Form Styling */
-    .admin-form-group {
-      margin-bottom: 16px;
+    .milestone-row:active {
+      background: var(--bg);
     }
-    .admin-form-group label {
-      display: block;
-      font-size: 13px;
-      color: var(--color-text-muted);
-      margin-bottom: 6px;
+
+    .ms-label {
+      font-size: 15px;
+      flex: 1;
+      line-height: 1.4;
     }
-    .admin-form-control {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--color-border-glass);
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: var(--color-text-primary);
-      font-family: var(--font-body);
+
+    .ms-label.done {
+      color: var(--faint);
+      text-decoration: line-through;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: calc(84px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: rgba(26, 26, 24, .88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 22px;
       font-size: 14px;
-      outline: none;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      z-index: 300;
+      white-space: nowrap;
+      max-width: 90vw;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
-    .admin-form-control:focus {
-      border-color: var(--color-border-focus);
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
-    .btn-submit-cms {
-      width: 100%;
-      background: var(--color-accent);
-      border: none;
-      color: white;
-      font-family: var(--font-body);
-      font-weight: 600;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: var(--transition-fast);
-      margin-top: 10px;
+
+    /* ── Divider ── */
+    .divider {
+      height: 0.5px;
+      background: #f0ede8;
+      margin: 0 16px;
     }
-    .btn-submit-cms:hover {
-      background: #6D28D9;
-      box-shadow: 0 4px 15px var(--color-accent-glow);
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--faint);
+      font-size: 15px;
     }
   </style>
 </head>
+
 <body>
-
-  <!-- Background Glowing Blobs -->
-  <div class="glow-blob blob-1"></div>
-  <div class="glow-blob blob-2"></div>
-
-  <!-- Sticky Navbar -->
-  <header class="navbar">
-    <div class="nav-container">
-      <a class="logo" onclick="switchTab('search')">
-        <svg class="logo-icon" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 8v8M8 12h8" stroke-linecap="round"/>
+  <div id="app">
+    <div id="screen"></div>
+    <nav id="tab-bar">
+      <button class="tab active" id="tab-today" onclick="nav('today')">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3.5" />
+          <path
+            d="M12 2v2.5M12 19.5V22M4.22 4.22l1.77 1.77M18.01 18.01l1.77 1.77M2 12h2.5M19.5 12H22M4.22 19.78l1.77-1.77M18.01 5.99l1.77-1.77" />
         </svg>
-        CompareAI
-      </a>
-      <nav class="nav-tabs">
-        <button class="tab-btn active" id="tab-btn-search" onclick="switchTab('search')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          Search
-        </button>
-        <button class="tab-btn" id="tab-btn-wishlist" onclick="switchTab('wishlist')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-          Wishlist
-        </button>
-        <button class="tab-btn" id="tab-btn-admin" onclick="switchTab('admin')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          Admin
-        </button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Page Body -->
-  <main class="app-main">
-
-    <!-- ─── TAB: SEARCH ─── -->
-    <section class="tab-view active" id="view-search">
-      <div class="hero-section">
-        <div class="ai-orb-container">
-          <div class="orb-glow"></div>
-          <svg class="ai-orb idle" id="orb-graphics" viewBox="0 0 160 160">
-            <defs>
-              <linearGradient id="orb-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#7C3AED" />
-                <stop offset="100%" stop-color="#1A56DB" />
-              </linearGradient>
-              <linearGradient id="orb-gradient-thinking" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#EC4899" />
-                <stop offset="50%" stop-color="#8B5CF6" />
-                <stop offset="100%" stop-color="#06B6D4" />
-              </linearGradient>
-            </defs>
-            <path class="orb-morph" d="M 80 20 Q 140 40 140 80 T 80 140 Q 20 120 20 80 T 80 20" />
-          </svg>
-        </div>
-        <h1 class="hero-title">Universal Decision Engine</h1>
-        <p class="hero-subtitle">Describe your comparison requirements in natural language. The AI parses intent, reviews metrics, and outputs reasoning.</p>
-      </div>
-
-      <!-- Search Container -->
-      <div class="search-wrapper">
-        <input type="text" class="search-bar" id="search-input" placeholder="e.g. best laptop for programming under ₹1,20,000 with good battery life" autocomplete="off">
-        <svg class="search-icon" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"/>
-          <path d="m21 21-4.3-4.3" stroke-linecap="round"/>
+        Today
+      </button>
+      <button class="tab" id="tab-week" onclick="nav('week')">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2.5" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
         </svg>
-        <span class="keyboard-shortcut">/</span>
-        
-        <div class="suggestion-chips">
-          <span class="chip" onclick="applySuggestion(this)">best laptop for video editing under ₹1,50,000</span>
-          <span class="chip" onclick="applySuggestion(this)">noise-cancelling headphones for travel</span>
-          <span class="chip" onclick="applySuggestion(this)">cloud storage for privacy</span>
-        </div>
-      </div>
-
-      <!-- Live NLP Panel -->
-      <div class="nlp-panel" id="nlp-panel">
-        <div class="nlp-title">
-          <svg class="nlp-title-icon" viewBox="0 0 24 24">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-          AI Intent Extraction Pipeline
-        </div>
-        <div class="nlp-chips" id="nlp-chips-container">
-          <!-- chips added dynamically -->
-        </div>
-      </div>
-
-      <!-- Search Results Area -->
-      <div class="results-container" id="results-container">
-        <!-- result cards dynamically populated -->
-      </div>
-
-      <!-- Side by Side Compare Panel -->
-      <div class="compare-detail-panel" id="compare-panel">
-        <div class="compare-panel-header">
-          <h2 class="compare-title">Detailed Comparison Matrix</h2>
-          <button class="close-btn" onclick="closeCompare()">&times;</button>
-        </div>
-        <div class="compare-matrix-scroll">
-          <table class="compare-matrix" id="compare-matrix-table">
-            <!-- loaded dynamically -->
-          </table>
-        </div>
-        
-        <!-- Comparative Charts Grid -->
-        <div class="compare-charts-grid">
-          <div class="chart-card">
-            <h3 class="chart-card-title">12-Month Historical Price Trajectory</h3>
-            <div class="chart-container">
-              <canvas id="price-history-chart"></canvas>
-            </div>
-          </div>
-          <div class="chart-card">
-            <h3 class="chart-card-title">Aggregated Customer Sentiment Breakdown</h3>
-            <div class="chart-container">
-              <canvas id="sentiment-chart"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── TAB: WISHLIST ─── -->
-    <section class="tab-view" id="view-wishlist">
-      <h2 style="font-family: var(--font-headings); font-size: 32px; margin-bottom: 24px;">Your Saved Comparisons</h2>
-      
-      <div class="wishlist-empty" id="wishlist-empty-state">
-        <svg viewBox="0 0 24 24" stroke-linecap="round">
-          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        Week
+      </button>
+      <button class="tab" id="tab-log" onclick="nav('log')">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 11l3 3L22 4" />
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
         </svg>
-        <p>No saved products yet. Search and click the bookmark icon on any recommendation card to track them.</p>
-      </div>
+        Log
+      </button>
+      <button class="tab" id="tab-stats" onclick="nav('stats')">
+        <svg viewBox="0 0 24 24">
+          <path d="M18 20V10M12 20V4M6 20v-6" />
+        </svg>
+        Stats
+      </button>
+    </nav>
+  </div>
+  <div id="toast"></div>
 
-      <div class="wishlist-grid" id="wishlist-grid">
-        <!-- populated dynamically -->
-      </div>
-    </section>
-
-    <!-- ─── TAB: ADMIN CONSOLE ─── -->
-    <section class="tab-view" id="view-admin">
-      <h2 style="font-family: var(--font-headings); font-size: 32px; margin-bottom: 24px;">Admin Control Center</h2>
-      
-      <div class="admin-layout">
-        <!-- Weights Configuration Column -->
-        <div class="admin-card">
-          <div class="admin-card-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="10" x2="20" y2="3"/><line x1="2" y1="14" x2="6" y2="14"/><line x1="10" y1="8" x2="14" y2="8"/><line x1="18" y1="16" x2="22" y2="16"/></svg>
-            Ranking Engine Weights Config
-          </div>
-          <p style="font-size: 13px; color: var(--color-text-muted); margin-bottom: 20px; line-height: 1.4;">
-            Adjust the multipliers utilized by the scoring logic to rank matched items dynamically. The total weight adjusts proportionally.
-          </p>
-          
-          <div class="control-group">
-            <div class="control-label">
-              <span>Specs Similarity Weight ($w_{specs}$)</span>
-              <span id="label-w-specs">40%</span>
-            </div>
-            <input type="range" class="slider-input" id="slider-w-specs" min="0" max="100" value="40" oninput="updateWeights('specs')">
-          </div>
-
-          <div class="control-group">
-            <div class="control-label">
-              <span>Review Sentiment Weight ($w_{reviews}$)</span>
-              <span id="label-w-reviews">30%</span>
-            </div>
-            <input type="range" class="slider-input" id="slider-w-reviews" min="0" max="100" value="30" oninput="updateWeights('reviews')">
-          </div>
-
-          <div class="control-group">
-            <div class="control-label">
-              <span>Price-to-Value Weight ($w_{price}$)</span>
-              <span id="label-w-price">30%</span>
-            </div>
-            <input type="range" class="slider-input" id="slider-w-price" min="0" max="100" value="30" oninput="updateWeights('price')">
-          </div>
-        </div>
-
-        <!-- Product CMS Console -->
-        <div class="admin-card">
-          <div class="admin-card-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
-            Product CMS Inventory Manage
-          </div>
-          
-          <div class="cms-table-wrapper">
-            <table class="cms-table" id="admin-cms-table">
-              <thead>
-                <tr>
-                  <th>Product Title</th>
-                  <th>Category</th>
-                  <th>Base Price</th>
-                  <th>Spec Score</th>
-                  <th>Rating</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-cms-tbody">
-                <!-- populated dynamically -->
-              </tbody>
-            </table>
-          </div>
-          
-          <!-- Quick Add / Edit Widget -->
-          <div style="margin-top: 30px; border-top: 1px solid var(--color-border-glass); padding-top: 24px;">
-            <h4 style="font-family: var(--font-headings); font-size: 15px; margin-bottom: 16px;" id="cms-form-title">Add New Product to database</h4>
-            <form id="cms-product-form" onsubmit="handleCmsSubmit(event)">
-              <input type="hidden" id="form-product-id">
-              <div class="admin-layout" style="grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div class="admin-form-group">
-                  <label for="form-title">Product Name</label>
-                  <input type="text" id="form-title" class="admin-form-control" required placeholder="e.g. Framework Laptop 13">
-                </div>
-                <div class="admin-form-group">
-                  <label for="form-category">Category</label>
-                  <select id="form-category" class="admin-form-control" onchange="adjustSpecsPlaceholder()">
-                    <option value="Laptops">Laptops</option>
-                    <option value="Noise-Cancelling Headphones">Noise-Cancelling Headphones</option>
-                    <option value="Cloud Storage SaaS">Cloud Storage SaaS</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="admin-layout" style="grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div class="admin-form-group">
-                  <label for="form-price">Price (₹ or ₹/mo)</label>
-                  <input type="number" id="form-price" class="admin-form-control" required placeholder="e.g. 139900">
-                </div>
-                <div class="admin-form-group">
-                  <label for="form-rating">Rating (out of 10)</label>
-                  <input type="number" step="0.1" id="form-rating" class="admin-form-control" required placeholder="e.g. 8.9">
-                </div>
-              </div>
-
-              <div class="admin-form-group">
-                <label for="form-specs">Specifications Schema (Comma-separated properties)</label>
-                <input type="text" id="form-specs" class="admin-form-control" required placeholder="e.g. 16GB RAM, Intel i7, 12hr Battery, IPS Screen">
-              </div>
-
-              <div class="admin-form-group">
-                <label for="form-usecase">Best Use Case (Keywords tags for indexing)</label>
-                <input type="text" id="form-usecase" class="admin-form-control" required placeholder="e.g. Programming, Coding, Business">
-              </div>
-
-              <button type="submit" class="btn-submit-cms" id="form-submit-btn">Save Product</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- JavaScript Logics -->
   <script>
-    // ─── MOCK DATABASE INVENTORY ───
-    let products = [
-      {
-        id: "lap-mbp14",
-        name: "Apple MacBook Pro 14 M3",
-        category: "Laptops",
-        price: 169900,
-        rating: 9.6,
-        specs: ["18GB RAM", "Apple M3 Chip", "18hr Battery", "Liquid Retina XDR Display", "Fanless"],
-        useCases: ["Video Editing", "Design", "Battery Life", "iOS Development"],
-        reviewsCount: 1420
-      },
-      {
-        id: "lap-tpx1",
-        name: "Lenovo ThinkPad X1 Carbon",
-        category: "Laptops",
-        price: 159900,
-        rating: 9.1,
-        specs: ["16GB RAM", "Intel Core i7", "14hr Battery", "Anti-Glare IPS", "Military Grade Build"],
-        useCases: ["Programming", "Coding", "Business", "Office Work"],
-        reviewsCount: 890
-      },
-      {
-        id: "lap-rog14",
-        name: "ASUS ROG Zephyrus G14",
-        category: "Laptops",
-        price: 139900,
-        rating: 9.3,
-        specs: ["32GB RAM", "AMD Ryzen 9", "8hr Battery", "120Hz OLED Display", "RTX 4060 GPU"],
-        useCases: ["Gaming", "Programming", "Machine Learning", "Coding"],
-        reviewsCount: 540
-      },
-      {
-        id: "lap-xps15",
-        name: "Dell XPS 15",
-        category: "Laptops",
-        price: 169900,
-        rating: 9.2,
-        specs: ["16GB RAM", "Intel Core i7", "12hr Battery", "InfinityEdge OLED Display", "Sleek Aluminum"],
-        useCases: ["Programming", "Design", "Video Editing", "Business"],
-        reviewsCount: 1100
-      },
-      {
-        id: "lap-asp5",
-        name: "Acer Aspire 5 Slim",
-        category: "Laptops",
-        price: 54900,
-        rating: 7.2,
-        specs: ["8GB RAM", "Intel Core i5", "7hr Battery", "FHD IPS Display", "Lightweight Plastic"],
-        useCases: ["Budget", "Casual", "School Work", "Office Work"],
-        reviewsCount: 2300
-      },
-      {
-        id: "hp-pav15",
-        name: "HP Pavilion 15 Laptop",
-        category: "Laptops",
-        price: 49900,
-        rating: 6.9,
-        specs: ["12GB RAM", "AMD Ryzen 5", "6hr Battery", "Standard LCD", "Backlit Keyboard"],
-        useCases: ["Budget", "Casual", "School Work"],
-        reviewsCount: 1450
-      },
-      {
-        id: "head-xm5",
-        name: "Sony WH-1000XM5",
-        category: "Noise-Cancelling Headphones",
-        price: 29990,
-        rating: 9.7,
-        specs: ["Active Noise Cancelling 10/10", "30hr Battery Life", "Bass Rich Profile", "Multipoint Connect"],
-        useCases: ["Commuting", "Travel", "Bass Heavy", "Office Work"],
-        reviewsCount: 3100
-      },
-      {
-        id: "head-bqc",
-        name: "Bose QuietComfort Ultra",
-        category: "Noise-Cancelling Headphones",
-        price: 35900,
-        rating: 9.5,
-        specs: ["Active Noise Cancelling 10/10", "24hr Battery Life", "Ultra Balanced Sound", "Extremely Comfortable"],
-        useCases: ["Commuting", "Comfort", "Travel", "Long Wear"],
-        reviewsCount: 1800
-      },
-      {
-        id: "head-sax",
-        name: "Sennheiser Accentum Plus",
-        category: "Noise-Cancelling Headphones",
-        price: 15990,
-        rating: 8.4,
-        specs: ["Active Noise Cancelling 7/10", "50hr Battery Life", "Neutral Studio Tuning", "Fast Charging"],
-        useCases: ["Office Work", "Battery Life", "Long Wear"],
-        reviewsCount: 420
-      },
-      {
-        id: "head-apmax",
-        name: "Apple AirPods Max",
-        category: "Noise-Cancelling Headphones",
-        price: 59900,
-        rating: 9.0,
-        specs: ["Active Noise Cancelling 9/10", "20hr Battery Life", "Apple H1 Chip", "Aluminum Earcups"],
-        useCases: ["Apple Ecosystem", "Design", "Commuting"],
-        reviewsCount: 2200
-      },
-      {
-        id: "saas-gdrive",
-        name: "Google Drive One",
-        category: "Cloud Storage SaaS",
-        price: 650,
-        rating: 9.2,
-        specs: ["2TB Space", "Real-Time Collaboration", "Enterprise SSO", "Docs & Sheets Sync"],
-        useCases: ["Sharing", "Teams", "Office Work", "Personal Backups"],
-        reviewsCount: 4500
-      },
-      {
-        id: "saas-dpx",
-        name: "Dropbox Business Advanced",
-        category: "Cloud Storage SaaS",
-        price: 999,
-        rating: 8.9,
-        specs: ["5TB Space", "High Speed Block Sync", "SSO Integration", "180-Day File History"],
-        useCases: ["Sync Speed", "Teams", "Large Files"],
-        reviewsCount: 3200
-      },
-      {
-        id: "saas-proton",
-        name: "Proton Drive Secure",
-        category: "Cloud Storage SaaS",
-        price: 399,
-        rating: 8.6,
-        specs: ["200GB Space", "Zero-Knowledge Encryption", "Swiss Privacy Shield", "Decentralized Nodes"],
-        useCases: ["Privacy", "Security", "Personal Backups", "Sensitive Data"],
-        reviewsCount: 780
-      }
+    /* ── DATA ── */
+    const DAYS = [
+      { name: 'Monday', short: 'Mon', type: 'training', typeLabel: 'Training day', session: 'Chest · Shoulders · Triceps · Abs', cal: '2,200', items: ['Workout completed', 'Calories on target (2,200 kcal)', 'Protein 145 g or more', 'Water 3.8 L', 'No liquid calories', '7+ hours sleep'] },
+      { name: 'Tuesday', short: 'Tue', type: 'rest', typeLabel: 'Rest day', session: 'Cardio 40 min', cal: '1,850', items: ['Cardio completed (40 min)', 'Calories on target (1,850 kcal)', 'Protein 145 g or more', 'Water 2.5 L', 'No liquid calories', '7+ hours sleep'] },
+      { name: 'Wednesday', short: 'Wed', type: 'training', typeLabel: 'Training day', session: 'Legs · Back · Biceps · Calves', cal: '2,200', items: ['Workout completed', 'Calories on target (2,200 kcal)', 'Protein 145 g or more', 'Water 3.8 L', 'No liquid calories', '7+ hours sleep'] },
+      { name: 'Thursday', short: 'Thu', type: 'rest', typeLabel: 'Rest day', session: 'Cardio 40 min', cal: '1,850', items: ['Cardio completed (40 min)', 'Calories on target (1,850 kcal)', 'Protein 145 g or more', 'Water 2.5 L', 'No liquid calories', '7+ hours sleep'] },
+      { name: 'Friday', short: 'Fri', type: 'training', typeLabel: 'Training day', session: 'Chest · Shoulders · Triceps · Abs', cal: '2,200', items: ['Workout completed', 'Calories on target (2,200 kcal)', 'Protein 145 g or more', 'Water 3.8 L', 'No liquid calories', '7+ hours sleep'] },
+      { name: 'Saturday', short: 'Sat', type: 'training', typeLabel: 'Training day', session: 'Legs · Back · Biceps · Calves', cal: '2,200', items: ['Workout completed', 'Calories on target (2,200 kcal)', 'Protein 145 g or more', 'Water 3.8 L', 'No liquid calories', '7+ hours sleep'] },
+      { name: 'Sunday', short: 'Sun', type: 'active-rest', typeLabel: 'Active rest', session: '30-min walk + weekly refeed', cal: '2,100', items: ['30-min walk done', 'Refeed on plan (2,100 kcal)', 'Protein 150 g or more', 'Water 2.5 L', 'No liquid calories', '7+ hours sleep'] }
     ];
 
-    // ─── STATE MANAGEMENT ───
-    let savedWishlist = JSON.parse(localStorage.getItem('compareai_wishlist')) || [];
-    let rankingWeights = { specs: 0.4, reviews: 0.3, price: 0.3 };
-    let currentComparisonItems = [];
-    let prevWeights = { specs: 40, reviews: 30, price: 30 };
+    const WEEK_TARGETS = [65.5, 65.1, 64.7, 64.2, 63.8, 63.4, 63.0];
 
-    // Keyboard trigger search bar shortcut
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/') {
-        const searchInput = document.getElementById('search-input');
-        if (document.activeElement !== searchInput) {
-          e.preventDefault();
-          searchInput.focus();
-        }
-      }
-    });
+    const MILESTONES = [
+      'Baseline measurements recorded (Week 1)',
+      'Week 2 photos taken',
+      'Week 3 measurements done',
+      'Week 4 mid-check completed',
+      'Week 6 final photos taken',
+      'Goal weight reached (63 kg)',
+      'Transition to maintenance started'
+    ];
 
-    // ─── TAB NAVIGATION ───
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
+    /* ── STATE ── */
+    let S = {};
+    let page = 'today';
+    let week = 1;
+    let expanded = {};
 
-      document.getElementById(`tab-btn-${tabId}`).classList.add('active');
-      document.getElementById(`view-${tabId}`).classList.add('active');
+    function load() {
+      try { const r = localStorage.getItem('arzu_tracker_v3'); if (r) S = JSON.parse(r); } catch (e) { S = {}; }
+    }
+    function save() {
+      try { localStorage.setItem('arzu_tracker_v3', JSON.stringify(S)); } catch (e) { }
+    }
+    function get(k, fallback = '') { return S[k] !== undefined ? S[k] : fallback; }
+    function set(k, v) { S[k] = v; save(); }
 
-      if (tabId === 'wishlist') {
-        renderWishlist();
-      } else if (tabId === 'admin') {
-        renderCmsTable();
-      }
+    function checks(w, d) { return get('ck_w' + w + '_d' + d, {}); }
+    function setCheck(w, d, i, v) { const c = { ...checks(w, d) }; c[i] = v; set('ck_w' + w + '_d' + d, c); }
+    function checksDone(w, d) { const c = checks(w, d); return Object.values(c).filter(Boolean).length; }
+
+    /* ── HELPERS ── */
+    function todayIdx() { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; }
+    function pct(done, total) { return total ? Math.round((done / total) * 100) : 0; }
+    function weightDelta(val) {
+      const v = parseFloat(val);
+      if (isNaN(v)) return { text: 'enter weight', cls: '' };
+      const d = parseFloat((v - 66).toFixed(1));
+      if (d < 0) return { text: d + ' kg ↓', cls: 'good' };
+      if (d > 0) return { text: '+' + d + ' kg ↑', cls: 'bad' };
+      return { text: 'no change', cls: '' };
     }
 
-    // ─── SIMULATED NLP PIPELINE & DATABASE ENGINE ───
-    const searchInput = document.getElementById('search-input');
-    const orbGraphics = document.getElementById('orb-graphics');
-    const nlpPanel = document.getElementById('nlp-panel');
-    const nlpChipsContainer = document.getElementById('nlp-chips-container');
-    const resultsContainer = document.getElementById('results-container');
-    let searchTimeout;
-
-    searchInput.addEventListener('input', () => {
-      clearTimeout(searchTimeout);
-      const query = searchInput.value.trim();
-      
-      if (query.length < 3) {
-        nlpPanel.style.display = 'none';
-        resultsContainer.innerHTML = '';
-        orbGraphics.className = "ai-orb idle";
-        return;
-      }
-
-      orbGraphics.className = "ai-orb thinking";
-      
-      searchTimeout = setTimeout(() => {
-        runRecommendation(query);
-      }, 1000);
-    });
-
-    function applySuggestion(chipEl) {
-      searchInput.value = chipEl.textContent;
-      searchInput.dispatchEvent(new Event('input'));
+    let toastTimer;
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
     }
 
-    function runRecommendation(query) {
-      // 1. NLP Constraint Extraction Simulation
-      const constraints = parseQueryNLP(query);
-      displayNlpExtraction(constraints);
+    /* ── NAVIGATION ── */
+    function nav(p) {
+      page = p;
+      expanded = {};
+      ['today', 'week', 'log', 'stats'].forEach(id => {
+        document.getElementById('tab-' + id).classList.toggle('active', id === p);
+      });
+      render();
+      document.getElementById('screen').scrollTop = 0;
+    }
 
-      // 2. pgvector Cosine Similarity Match and Ranking Math
-      const matchedCategory = constraints.category;
-      
-      // Filter database items by category
-      let candidates = products.filter(p => p.category === matchedCategory);
+    /* ── RENDER ROUTER ── */
+    function render() {
+      const el = document.getElementById('screen');
+      if (page === 'today') el.innerHTML = renderToday();
+      else if (page === 'week') el.innerHTML = renderWeek();
+      else if (page === 'log') el.innerHTML = renderLog();
+      else el.innerHTML = renderStats();
+    }
 
-      // Calculate score for each candidate
-      candidates.forEach(item => {
-        // A. Specs Match Score (0 to 10)
-        let specsScore = 5.0; // Base score
-        let matchCount = 0;
-        
-        // Match query parameters and best use cases
-        constraints.priorities.forEach(prio => {
-          if (item.useCases.some(uc => uc.toLowerCase().includes(prio.toLowerCase()))) {
-            matchCount++;
-          }
-        });
-        item.specs.forEach(spec => {
-          constraints.requiredSpecs.forEach(req => {
-            if (spec.toLowerCase().includes(req.toLowerCase())) {
-              matchCount++;
-            }
+    /* ── TODAY ── */
+    function renderToday() {
+      const di = todayIdx();
+      const day = DAYS[di];
+      const c = checks(week, di);
+      const done = Object.values(c).filter(Boolean).length;
+      const total = day.items.length;
+      const p = pct(done, total);
+
+      let h = `<div class="page-header">
+    <h1>Today</h1>
+    <div class="subtitle">${day.name} &nbsp;·&nbsp; Week ${week} &nbsp;·&nbsp; ${day.typeLabel}</div>
+  </div>`;
+
+      h += `<div class="section"><div class="stats-grid">
+    <div class="stat-tile accent">
+      <div class="s-label">Calories</div>
+      <div class="s-value">${day.cal}</div>
+      <div class="s-sub">kcal target</div>
+    </div>
+    <div class="stat-tile">
+      <div class="s-label">Checked off</div>
+      <div class="s-value">${done} / ${total}</div>
+      <div class="s-sub">${p}% done</div>
+    </div>
+    <div class="stat-tile">
+      <div class="s-label">Protein min</div>
+      <div class="s-value">145 g</div>
+      <div class="s-sub">every day</div>
+    </div>
+    <div class="stat-tile">
+      <div class="s-label">Water goal</div>
+      <div class="s-value">${day.type === 'training' ? '3.8' : '2.5'} L</div>
+      <div class="s-sub">today</div>
+    </div>
+  </div></div>`;
+
+      h += `<div class="section">
+    <div class="section-label">${day.session}</div>
+    <div class="card">
+      <div class="day-prog-track"><div class="day-prog-fill" style="width:${p}%"></div></div>`;
+      day.items.forEach((item, i) => {
+        const chk = !!c[i];
+        h += `<button class="check-row" onclick="tapCheck(${di},${i})">
+      <div class="chk-box${chk ? ' checked' : ''}"><svg viewBox="0 0 14 14"><polyline points="2,7 6,11 12,3"/></svg></div>
+      <span class="chk-label${chk ? ' done' : ''}">${item}</span>
+    </button>`;
+      });
+      h += `</div></div>`;
+
+      h += `<div class="section">
+    <div class="section-label">Notes for today</div>
+    <div class="card">
+      <textarea class="notes-area" placeholder="Energy, hunger, how the workout felt…" oninput="set('note_today_w${week}_d${di}',this.value)">${get('note_today_w' + week + '_d' + di)}</textarea>
+    </div>
+  </div>`;
+
+      return h;
+    }
+
+    /* ── WEEK ── */
+    function renderWeek() {
+      const di = todayIdx();
+      let h = `<div class="page-header"><h1>Week ${week}</h1><div class="subtitle">7-week BFFM fat loss plan</div></div>`;
+
+      h += `<div class="week-strip">`;
+      for (let w = 1; w <= 7; w++) h += `<button class="week-pill${w === week ? ' active' : ''}" onclick="setWeek(${w})">Week ${w}</button>`;
+      h += `</div>`;
+
+      h += `<div class="target-banner">
+    <div><div class="tb-label">Start</div><div class="tb-val">66.0 kg</div></div>
+    <div class="tb-arrow">→</div>
+    <div style="text-align:right"><div class="tb-label">Week ${week} target</div><div class="tb-val">${WEEK_TARGETS[week - 1]} kg</div></div>
+  </div>`;
+
+      h += `<div class="section"><div class="section-label">All days</div>`;
+      DAYS.forEach((day, i) => {
+        const done = checksDone(week, i);
+        const total = day.items.length;
+        const p = pct(done, total);
+        const isToday = i === di;
+        const open = !!expanded[i];
+        const c = checks(week, i);
+
+        h += `<div class="day-card">
+      <button class="day-head" onclick="toggleDay(${i})">
+        <div class="day-dot ${day.type}"></div>
+        <div class="day-head-text">
+          <div class="dh-name">${day.short}${isToday ? '<span class="today-badge">Today</span>' : ''}</div>
+          <div class="dh-type ${day.type}">${day.typeLabel} &nbsp;·&nbsp; ${day.cal} kcal</div>
+        </div>
+        <div class="day-right">
+          <div class="dr-frac">${done}/${total}</div>
+          <div class="dr-pct">${p}%</div>
+        </div>
+      </button>
+      <div class="day-prog-track"><div class="day-prog-fill" style="width:${p}%"></div></div>`;
+        if (open) {
+          h += `<div>`;
+          day.items.forEach((item, j) => {
+            const chk = !!c[j];
+            h += `<button class="check-row" onclick="tapCheckWeek(${i},${j})">
+          <div class="chk-box${chk ? ' checked' : ''}"><svg viewBox="0 0 14 14" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 6,11 12,3"/></svg></div>
+          <span class="chk-label${chk ? ' done' : ''}">${item}</span>
+        </button>`;
           });
-        });
-        
-        if (constraints.priorities.length + constraints.requiredSpecs.length > 0) {
-          specsScore = Math.min(10.0, 5.0 + (matchCount * 1.5));
+          h += `</div>`;
         }
+        h += `</div>`;
+      });
+      h += `</div>`;
 
-        // B. Review Score (mapped 0 to 10)
-        const reviewScore = item.rating;
+      h += `<div class="section">
+    <div class="section-label">Week ${week} notes</div>
+    <div class="card">
+      <textarea class="notes-area" placeholder="Energy levels, plateau signs, what worked, adjustments…" oninput="set('note_week_w${week}',this.value)">${get('note_week_w' + week)}</textarea>
+    </div>
+  </div>`;
 
-        // C. Price-to-Value Score (0 to 10)
-        let priceScore = 5.0;
-        if (constraints.budget > 0) {
-          if (item.price <= constraints.budget) {
-            // Under budget, calculate advantage
-            const ratio = (constraints.budget - item.price) / constraints.budget;
-            priceScore = Math.min(10.0, 7.0 + (ratio * 3.0));
-          } else {
-            // Over budget penalization
-            const excessRatio = (item.price - constraints.budget) / constraints.budget;
-            priceScore = Math.max(0.0, 4.0 - (excessRatio * 5.0));
-          }
-        } else {
-          // If no budget declared, lower prices score higher value (INR scale adjusted)
-          priceScore = Math.max(1.0, 10.0 - (item.price / (matchedCategory === 'Laptops' ? 20000 : 4000)));
-        }
+      return h;
+    }
 
-        // Final Composite Weighted Ranking Formula (CompareAI Engine Docs Section 49)
-        const wTotal = rankingWeights.specs + rankingWeights.reviews + rankingWeights.price;
-        const normWSpecs = rankingWeights.specs / wTotal;
-        const normWReviews = rankingWeights.reviews / wTotal;
-        const normWPrice = rankingWeights.price / wTotal;
+    /* ── LOG ── */
+    function renderLog() {
+      const w = week;
+      const wv = get('weight_w' + w);
+      const dlt = weightDelta(wv);
 
-        item.calculatedScore = (
-          (normWSpecs * specsScore) + 
-          (normWReviews * reviewScore) + 
-          (normWPrice * priceScore)
-        ).toFixed(1);
+      let h = `<div class="page-header"><h1>Log</h1><div class="subtitle">Week ${w} · measurements &amp; lifts</div></div>`;
 
-        // Generate explainable reasoning logic dynamically
-        item.aiReasoning = generateAIReasoning(item, constraints, specsScore, priceScore);
+      h += `<div class="week-strip">`;
+      for (let ww = 1; ww <= 7; ww++) h += `<button class="week-pill${ww === w ? ' active' : ''}" onclick="setWeek(${ww})">Week ${ww}</button>`;
+      h += `</div>`;
+
+      /* Weight */
+      h += `<div class="section">
+    <div class="section-label">Monday weigh-in</div>
+    <div class="card">
+      <div class="weight-hero">
+        <div class="weight-num-wrap">
+          <input class="weight-input" type="number" step="0.1" inputmode="decimal" placeholder="66.0"
+            value="${wv}" oninput="handleWeight(this.value)">
+          <span class="weight-unit">kg</span>
+        </div>
+        <div class="delta-pill ${dlt.cls}" id="dpill">${dlt.text}</div>
+      </div>
+    </div>
+  </div>`;
+
+      /* Measurements */
+      h += `<div class="section">
+    <div class="section-label">Body measurements (cm)</div>
+    <div class="card">`;
+      [['mw_' + w, 'Waist at navel'], ['mh_' + w, 'Hips at widest'], ['mc_' + w, 'Chest'], ['ma_' + w, 'Right arm (flexed)'], ['mt_' + w, 'Right thigh']].forEach(([k, lbl]) => {
+        h += `<div class="log-row">
+      <span class="lr-label">${lbl}</span>
+      <input class="log-input" type="number" inputmode="decimal" placeholder="— cm" value="${get(k)}" oninput="set('${k}',this.value)">
+    </div>`;
+      });
+      h += `</div></div>`;
+
+      /* Strength */
+      h += `<div class="section">
+    <div class="section-label">Strength log</div>
+    <div class="card">`;
+      [['sb_' + w, 'Bench press'], ['ss_' + w, 'Barbell squat'], ['sp_' + w, 'Pull-up / lat pulldown'], ['sr_' + w, 'Seated cable row'], ['sc_' + w, 'Barbell curl'], ['scf_' + w, 'Standing calf raise']].forEach(([k, lbl]) => {
+        h += `<div class="log-row">
+      <span class="lr-label">${lbl}</span>
+      <input class="log-input" type="text" inputmode="decimal" placeholder="kg × reps" value="${get(k)}" oninput="set('${k}',this.value)" style="width:130px">
+    </div>`;
+      });
+      h += `</div></div>`;
+
+      /* Non-negotiables */
+      h += `<div class="section">
+    <div class="section-label">Weekly non-negotiables</div>
+    <div class="card">`;
+      [['nn_liq_' + w, 'No liquid calories all week'], ['nn_slp_' + w, '7+ hrs sleep (average)'], ['nn_ref_' + w, 'Sunday refeed on plan'], ['nn_ovl_' + w, 'Progressive overload logged']].forEach(([k, lbl]) => {
+        const v = get(k);
+        h += `<div class="log-row">
+      <span class="lr-label">${lbl}</span>
+      <select class="log-select" onchange="set('${k}',this.value)">
+        <option value="" ${!v ? 'selected' : ''}>—</option>
+        <option value="yes" ${v === 'yes' ? 'selected' : ''}>✓ Yes</option>
+        <option value="no"  ${v === 'no' ? 'selected' : ''}>✗ No</option>
+      </select>
+    </div>`;
+      });
+      h += `</div></div>`;
+
+      return h;
+    }
+
+    /* ── STATS ── */
+    function renderStats() {
+      const w = week;
+      let weights = 0, cardio = 0, proteinDays = 0;
+      DAYS.forEach((day, i) => {
+        const c = checks(w, i);
+        if (day.type === 'training' && c[0]) weights++;
+        if (day.type === 'rest' && c[0]) cardio++;
+        const pi = day.items.findIndex(it => it.includes('Protein'));
+        if (pi >= 0 && c[pi]) proteinDays++;
       });
 
-      // Sort descending based on composite score
-      candidates.sort((a, b) => b.calculatedScore - a.calculatedScore);
+      let h = `<div class="page-header"><h1>Progress</h1><div class="subtitle">7 weeks · 66 kg → 63 kg</div></div>`;
 
-      // 3. Render Results cards
-      renderResults(candidates);
-      orbGraphics.className = "ai-orb success";
-    }
+      h += `<div class="week-strip">`;
+      for (let ww = 1; ww <= 7; ww++) h += `<button class="week-pill${ww === w ? ' active' : ''}" onclick="setWeek(${ww})">${ww}</button>`;
+      h += `</div>`;
 
-    function parseQueryNLP(query) {
-      const q = query.toLowerCase();
-      let constraints = {
-        category: "Laptops", // default fallback
-        budget: 0,
-        priorities: [],
-        requiredSpecs: []
-      };
+      h += `<div class="section">
+    <div class="section-label">Week ${w} sessions</div>
+    <div class="card">
+      ${ringRow('Weight sessions', weights, 4, '#1D9E75')}
+      ${ringRow('Cardio sessions', cardio, 2, '#185FA5')}
+      ${ringRow('Protein days hit', proteinDays, 7, '#BA7517')}
+    </div>
+  </div>`;
 
-      // Category extraction
-      if (q.includes('headphone') || q.includes('ear') || q.includes('noise') || q.includes('audio') || q.includes('sony') || q.includes('bose')) {
-        constraints.category = "Noise-Cancelling Headphones";
-      } else if (q.includes('cloud') || q.includes('storage') || q.includes('drive') || q.includes('saas') || q.includes('backup') || q.includes('dropbox')) {
-        constraints.category = "Cloud Storage SaaS";
+      /* Weight log table */
+      h += `<div class="section">
+    <div class="section-label">Weight log — all weeks</div>
+    <div class="card">
+      <div class="log-row" style="background:var(--bg)">
+        <span class="lr-label" style="font-size:13px;color:var(--muted)">Week</span>
+        <span style="font-size:13px;color:var(--muted)">Logged &nbsp;/&nbsp; Target</span>
+      </div>`;
+      for (let ww = 1; ww <= 7; ww++) {
+        const logged = get('weight_w' + ww);
+        const target = WEEK_TARGETS[ww - 1];
+        const isCur = ww === w;
+        let valColor = 'var(--faint)';
+        if (logged) valColor = parseFloat(logged) <= target ? 'var(--green-dark)' : 'var(--red)';
+        h += `<div class="log-row" style="${isCur ? 'background:var(--green-light)' : ''}">
+      <span class="lr-label" style="${isCur ? 'font-weight:700;color:var(--green-dark)' : ''}">${ww === w ? '→ ' : ''}Week ${ww}</span>
+      <span style="font-size:15px;color:${valColor};font-weight:600">
+        ${logged ? logged + ' kg' : '—'}
+        <span style="color:var(--faint);font-size:13px;font-weight:400"> / ${target}</span>
+      </span>
+    </div>`;
       }
+      h += `</div></div>`;
 
-      // Budget extraction supporting ₹, Rs, inr, and digit separators (e.g. ₹1,50,000)
-      const normalizedQuery = q.replace(/(\d),(\d)/g, '$1$2');
-      const budgetMatch = normalizedQuery.match(/(?:under|max|budget of|\$|₹|rs\.?|inr)\s*(\d+)/);
-      if (budgetMatch) {
-        constraints.budget = parseInt(budgetMatch[1]);
-      }
-
-      // Priorities / Use cases mapping
-      const priorityKeywords = ["programming", "coding", "video", "editing", "gaming", "travel", "commute", "office", "business", "privacy", "security", "sharing", "sync"];
-      priorityKeywords.forEach(word => {
-        if (q.includes(word)) {
-          constraints.priorities.push(word);
-        }
+      /* Milestones */
+      h += `<div class="section">
+    <div class="section-label">7-week milestones</div>
+    <div class="card">`;
+      MILESTONES.forEach((m, i) => {
+        const done = !!get('ms_' + i, false);
+        h += `<button class="milestone-row" onclick="tapMilestone(${i})">
+      <div class="chk-box${done ? ' checked' : ''}"><svg viewBox="0 0 14 14" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 6,11 12,3"/></svg></div>
+      <span class="ms-label${done ? ' done' : ''}">${m}</span>
+    </button>`;
       });
+      h += `</div></div>`;
 
-      // Specifications requirement matching
-      const specKeywords = ["16gb", "32gb", "ram", "oled", "battery", "anc", "encryption", "tb", "gb"];
-      specKeywords.forEach(spec => {
-        if (q.includes(spec)) {
-          constraints.requiredSpecs.push(spec);
-        }
-      });
-
-      return constraints;
+      return h;
     }
 
-    function displayNlpExtraction(constraints) {
-      nlpPanel.style.display = 'block';
-      nlpChipsContainer.innerHTML = '';
-
-      const addChip = (label, val) => {
-        const chip = document.createElement('div');
-        chip.className = 'nlp-chip';
-        chip.innerHTML = `<span class="nlp-chip-label">${label}:</span> ${val}`;
-        nlpChipsContainer.appendChild(chip);
-      };
-
-      addChip("Extracted Category", constraints.category);
-      if (constraints.budget > 0) {
-        addChip("Budget Limit", `₹${constraints.budget.toLocaleString('en-IN')}`);
-      }
-      if (constraints.priorities.length > 0) {
-        addChip("Priorities", constraints.priorities.join(", "));
-      }
-      if (constraints.requiredSpecs.length > 0) {
-        addChip("Specs Filter", constraints.requiredSpecs.join(", "));
-      }
+    function ringRow(title, val, max, color) {
+      const r = 18, circ = +(2 * Math.PI * r).toFixed(2);
+      const offset = +(circ - circ * (val / max)).toFixed(2);
+      const p = Math.round((val / max) * 100);
+      return `<div class="ring-row">
+    <div class="ring-svg-wrap">
+      <svg viewBox="0 0 46 46">
+        <circle class="ring-bg" cx="23" cy="23" r="${r}"/>
+        <circle class="ring-arc" cx="23" cy="23" r="${r}" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+      </svg>
+      <div class="ring-pct" style="color:${color}">${p}%</div>
+    </div>
+    <div class="ring-body"><div class="ring-title">${title}</div><div class="ring-sub">${val} of ${max} completed</div></div>
+    <div class="ring-frac" style="color:${color}">${val}/${max}</div>
+  </div>`;
     }
 
-    function generateAIReasoning(item, constraints, specsScore, priceScore) {
-      let reasoning = `Ranks well in the ${item.category} index. `;
-      
-      if (constraints.priorities.length > 0) {
-        reasoning += `It is highly optimized for ${constraints.priorities.slice(0, 2).join(" and ")} workloads. `;
-      }
-      
-      if (constraints.budget > 0) {
-        if (item.price <= constraints.budget) {
-          reasoning += `Stays safely within your budget at ₹${item.price.toLocaleString('en-IN')} (under budget by ₹${(constraints.budget - item.price).toLocaleString('en-IN')}). `;
-        } else {
-          reasoning += `Exceeds budget limit by ₹${(item.price - constraints.budget).toLocaleString('en-IN')}, but justifies the delta through superior performance indexes. `;
-        }
-      } else {
-        reasoning += `Provides solid hardware return value for a flat price of ₹${item.price.toLocaleString('en-IN')}. `;
-      }
-
-      if (item.rating >= 9.0) {
-        reasoning += `Aggregated peer consensus ranks this item in the top 90th percentile for user satisfaction.`;
-      }
-
-      return reasoning;
+    /* ── ACTIONS ── */
+    function tapCheck(di, i) {
+      const prev = !!checks(week, di)[i];
+      setCheck(week, di, i, !prev);
+      if (!prev) toast('✓ ' + DAYS[di].items[i]);
+      render();
+    }
+    function tapCheckWeek(di, i) {
+      const prev = !!checks(week, di)[i];
+      setCheck(week, di, i, !prev);
+      if (!prev) toast('✓ ' + DAYS[di].items[i]);
+      render();
+    }
+    function toggleDay(i) { expanded[i] = !expanded[i]; render(); }
+    function setWeek(w) { week = w; expanded = {}; render(); document.getElementById('screen').scrollTop = 0; }
+    function tapMilestone(i) { set('ms_' + i, !get('ms_' + i, false)); render(); }
+    function handleWeight(val) {
+      set('weight_w' + week, val);
+      const pill = document.getElementById('dpill');
+      if (pill) { const d = weightDelta(val); pill.className = 'delta-pill ' + d.cls; pill.textContent = d.text; }
     }
 
-    function renderResults(list) {
-      resultsContainer.innerHTML = '';
-      currentComparisonItems = list;
-
-      if (list.length === 0) {
-        resultsContainer.innerHTML = `<p style="color: var(--color-text-muted); text-align: center; padding: 40px 0;">No products match your custom parameters.</p>`;
-        return;
-      }
-
-      list.forEach((item, index) => {
-        const isSaved = savedWishlist.some(w => w.id === item.id);
-        const card = document.createElement('div');
-        card.className = `result-card ${index === 0 ? 'rank-1' : ''}`;
-        card.setAttribute('onclick', `expandCompare(${JSON.stringify(item.id)})`);
-        
-        card.innerHTML = `
-          <div class="card-header">
-            <span class="rank-indicator">${index + 1}</span>
-            <div class="product-meta">
-              <h3 class="product-title">${item.name}</h3>
-              <span class="product-category">${item.category}</span>
-            </div>
-            <div class="score-container">
-              <div class="score-ring">
-                <svg viewBox="0 0 36 36" style="width:100%; height:100%;">
-                  <path class="score-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  <path class="score-circle" stroke-dasharray="${item.calculatedScore * 10}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                </svg>
-                <div class="score-value">${item.calculatedScore}</div>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div>
-              <p class="reasoning-text">${item.aiReasoning}</p>
-              <div class="evidence-list">
-                <div class="evidence-item">
-                  <svg class="evidence-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  Verified by ${item.reviewsCount} external peer reports.
-                </div>
-                <div class="evidence-item">
-                  <svg class="evidence-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  Dynamic specs matrix calibrated: ${(item.rating * 10).toFixed(0)}% trust rating.
-                </div>
-              </div>
-            </div>
-            <div class="specs-and-price">
-              <div class="specs-grid">
-                ${item.specs.map(spec => `<span class="spec-badge">${spec}</span>`).join('')}
-              </div>
-              <div class="price-and-action">
-                <div>
-                  <span class="price-label">₹${item.price.toLocaleString('en-IN')}</span>
-                  <span class="price-sub">${item.category.includes('SaaS') ? 'per month' : 'one-time'}</span>
-                </div>
-                <div class="action-row" onclick="event.stopPropagation()">
-                  <a class="buy-btn" href="https://example.com/buy/${item.id}" target="_blank" title="Buy Product">
-                    Buy (₹${item.price.toLocaleString('en-IN')})
-                  </a>
-                  <button class="save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave('${item.id}', this)" title="Save Comparison">
-                    <svg viewBox="0 0 24 24">
-                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                    </svg>
-                  </button>
-                  <button class="expand-btn" onclick="expandCompare('${item.id}')" title="View Detailed Matrix">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        resultsContainer.appendChild(card);
-      });
-    }
-
-    // ─── DETAIL COMPARE PANEL LOGIC ───
-    function expandCompare(productId) {
-      const selected = products.find(p => p.id === productId);
-      if (!selected) return;
-
-      const comparePanel = document.getElementById('compare-panel');
-      comparePanel.style.display = 'block';
-      comparePanel.scrollIntoView({ behavior: 'smooth' });
-
-      // Gather comparative candidates (same category)
-      const peers = products.filter(p => p.category === selected.category).slice(0, 3);
-      
-      // Render Matrix Table
-      const matrixTable = document.getElementById('compare-matrix-table');
-      matrixTable.innerHTML = '';
-
-      // Header row
-      let headerHtml = `<tr><th class="spec-name-col">Specification Matrix</th>`;
-      peers.forEach(peer => {
-        headerHtml += `<th>${peer.name} ${peer.id === selected.id ? '<span style="color:var(--color-accent);">(Current)</span>' : ''}</th>`;
-      });
-      headerHtml += `</tr>`;
-
-      // Price Row
-      let priceHtml = `<tr><td class="spec-name-col">Base Price</td>`;
-      peers.forEach(peer => {
-        priceHtml += `<td>₹${peer.price.toLocaleString('en-IN')}</td>`;
-      });
-      priceHtml += `</tr>`;
-
-      // Buy Option Row
-      let buyLinkHtml = `<tr><td class="spec-name-col">Purchase Link</td>`;
-      peers.forEach(peer => {
-        buyLinkHtml += `<td><a class="btn-buy-matrix" href="https://example.com/buy/${peer.id}" target="_blank">Buy at ₹${peer.price.toLocaleString('en-IN')}</a></td>`;
-      });
-      buyLinkHtml += `</tr>`;
-
-      // Rating Row
-      let ratingHtml = `<tr><td class="spec-name-col">Trust Rating</td>`;
-      peers.forEach(peer => {
-        ratingHtml += `<td>${peer.rating} / 10</td>`;
-      });
-      ratingHtml += `</tr>`;
-
-      // Specs Rows mapping
-      let specsHtml = '';
-      const totalSpecs = Math.max(...peers.map(p => p.specs.length));
-      for (let i = 0; i < totalSpecs; i++) {
-        specsHtml += `<tr><td class="spec-name-col">Feature Dimension #${i+1}</td>`;
-        peers.forEach(peer => {
-          const specText = peer.specs[i] || 'N/A';
-          specsHtml += `<td class="${i === 1 ? 'diff-highlight' : ''}">${specText}</td>`;
-        });
-        specsHtml += `</tr>`;
-      }
-
-      matrixTable.innerHTML = headerHtml + priceHtml + buyLinkHtml + ratingHtml + specsHtml;
-
-      // Render Price History & Sentiment Charts on HTML Canvas
-      renderPriceHistoryChart(peers);
-      renderSentimentChart(peers);
-    }
-
-    function closeCompare() {
-      document.getElementById('compare-panel').style.display = 'none';
-    }
-
-    // ─── CHARTS RENDERING LOGIC (CANVAS) ───
-    function renderPriceHistoryChart(items) {
-      const canvas = document.getElementById('price-history-chart');
-      const ctx = canvas.getContext('2d');
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      canvas.width = width;
-      canvas.height = height;
-
-      ctx.clearRect(0, 0, width, height);
-
-      // Grid background lines
-      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-      ctx.lineWidth = 1;
-      for (let i = 1; i <= 4; i++) {
-        const y = (height / 5) * i;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
-
-      // Plot curves for matched items
-      const colors = ['#7C3AED', '#10B981', '#1A56DB'];
-      items.forEach((item, index) => {
-        const basePrice = item.price;
-        const color = colors[index % colors.length];
-        
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-
-        const points = [];
-        const monthSteps = 6;
-        for (let m = 0; m < monthSteps; m++) {
-          const x = (width / (monthSteps - 1)) * m;
-          // Generate realistic fluctuation
-          const variance = Math.sin(m + index) * (basePrice * 0.08);
-          const currentVal = basePrice + variance;
-          // Map to canvas Y coordinate
-          const y = height - ((currentVal / (basePrice * 1.5)) * (height * 0.7));
-          points.push({ x, y });
-        }
-
-        ctx.moveTo(points[0].x, points[0].y);
-        for (let p = 1; p < points.length; p++) {
-          ctx.lineTo(points[p].x, points[p].y);
-        }
-        ctx.stroke();
-
-        // Label on path end
-        ctx.fillStyle = color;
-        ctx.font = '10px sans-serif';
-        ctx.fillText(`₹${basePrice.toLocaleString('en-IN')}`, points[points.length - 1].x - 60, points[points.length - 1].y - 8);
-      });
-    }
-
-    function renderSentimentChart(items) {
-      const canvas = document.getElementById('sentiment-chart');
-      const ctx = canvas.getContext('2d');
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      canvas.width = width;
-      canvas.height = height;
-
-      ctx.clearRect(0, 0, width, height);
-
-      // Side-by-side vertical bar chart
-      const barWidth = 35;
-      const spacing = 40;
-      const groupWidth = items.length * barWidth + spacing;
-      const startX = (width - (groupWidth * items.length)) / 2;
-
-      items.forEach((item, index) => {
-        const x = startX + index * (groupWidth);
-        const rating = item.rating; // out of 10
-        const barHeight = (rating / 10) * (height * 0.7);
-        const y = height - barHeight - 20;
-
-        // Custom Gradient
-        const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
-        gradient.addColorStop(0, '#7C3AED');
-        gradient.addColorStop(1, '#1A56DB');
-
-        ctx.fillStyle = gradient;
-        ctx.fillRect(x, y, barWidth, barHeight);
-
-        // Text labels
-        ctx.fillStyle = '#FFF';
-        ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`${(rating * 10).toFixed(0)}%`, x + 6, y - 8);
-
-        ctx.fillStyle = '#9CA3AF';
-        ctx.font = '9px sans-serif';
-        ctx.fillText(item.name.split(' ').slice(-1)[0], x, height - 4);
-      });
-    }
-
-    // ─── WISHLIST STORAGE ───
-    function toggleSave(id, btn) {
-      const foundIdx = savedWishlist.findIndex(w => w.id === id);
-      if (foundIdx > -1) {
-        savedWishlist.splice(foundIdx, 1);
-        btn.classList.remove('saved');
-      } else {
-        const product = products.find(p => p.id === id);
-        if (product) {
-          savedWishlist.push(product);
-          btn.classList.add('saved');
-        }
-      }
-      localStorage.setItem('compareai_wishlist', JSON.stringify(savedWishlist));
-    }
-
-    function renderWishlist() {
-      const emptyState = document.getElementById('wishlist-empty-state');
-      const grid = document.getElementById('wishlist-grid');
-      
-      grid.innerHTML = '';
-
-      if (savedWishlist.length === 0) {
-        emptyState.style.display = 'block';
-        return;
-      }
-      emptyState.style.display = 'none';
-
-      savedWishlist.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'wishlist-card';
-        card.innerHTML = `
-          <div class="wishlist-meta">
-            <h3 class="wishlist-title">${item.name}</h3>
-            <span class="wishlist-category">${item.category}</span>
-          </div>
-          <p style="font-size: 13.5px; color: var(--color-text-secondary); margin-bottom: 12px;">
-            Specs: ${item.specs.slice(0, 3).join(", ")}
-          </p>
-          <div class="wishlist-price-watch">
-            <div>
-              <span class="price-watch-label">Price Drop Alert Notification</span>
-              <span style="display:block; font-size:11px; color:var(--color-text-muted);">Alert me on drops below ₹${item.price.toLocaleString('en-IN')}</span>
-            </div>
-            <label class="switch">
-              <input type="checkbox" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="wishlist-price-watch" style="margin-top: 12px; border-top: none; padding-top: 0;">
-            <div>
-              <span class="price-watch-label">Instant SMS & Email Alerts</span>
-              <span style="display:block; font-size:11px; color:var(--color-text-muted);">Receive immediate notifications via Twilio & SendGrid</span>
-            </div>
-            <label class="switch">
-              <input type="checkbox" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    // ─── ADMIN CMS CONFIGS ───
-    const cmsTbody = document.getElementById('admin-cms-tbody');
-    const labelWSpecs = document.getElementById('label-w-specs');
-    const labelWReviews = document.getElementById('label-w-reviews');
-    const labelWPrice = document.getElementById('label-w-price');
-
-    function updateWeights(changedType) {
-      let wSpecs = parseInt(document.getElementById('slider-w-specs').value);
-      let wReviews = parseInt(document.getElementById('slider-w-reviews').value);
-      let wPrice = parseInt(document.getElementById('slider-w-price').value);
-
-      if (changedType) {
-        // Proportional redistribution to keep sum at exactly 100%
-        if (changedType === 'specs') {
-          const remainder = 100 - wSpecs;
-          const otherSum = prevWeights.reviews + prevWeights.price;
-          if (otherSum > 0) {
-            wReviews = Math.round((prevWeights.reviews / otherSum) * remainder);
-            wPrice = 100 - wSpecs - wReviews;
-          } else {
-            wReviews = Math.round(remainder / 2);
-            wPrice = remainder - wReviews;
-          }
-        } else if (changedType === 'reviews') {
-          const remainder = 100 - wReviews;
-          const otherSum = prevWeights.specs + prevWeights.price;
-          if (otherSum > 0) {
-            wSpecs = Math.round((prevWeights.specs / otherSum) * remainder);
-            wPrice = 100 - wReviews - wSpecs;
-          } else {
-            wSpecs = Math.round(remainder / 2);
-            wPrice = remainder - wSpecs;
-          }
-        } else if (changedType === 'price') {
-          const remainder = 100 - wPrice;
-          const otherSum = prevWeights.specs + prevWeights.reviews;
-          if (otherSum > 0) {
-            wSpecs = Math.round((prevWeights.specs / otherSum) * remainder);
-            wReviews = 100 - wPrice - wSpecs;
-          } else {
-            wSpecs = Math.round(remainder / 2);
-            wReviews = remainder - wSpecs;
-          }
-        }
-
-        // Enforce bounds
-        wSpecs = Math.max(0, Math.min(100, wSpecs));
-        wReviews = Math.max(0, Math.min(100, wReviews));
-        wPrice = Math.max(0, Math.min(100, wPrice));
-
-        // Update DOM slider values
-        document.getElementById('slider-w-specs').value = wSpecs;
-        document.getElementById('slider-w-reviews').value = wReviews;
-        document.getElementById('slider-w-price').value = wPrice;
-      }
-
-      // Save to prevWeights
-      prevWeights = { specs: wSpecs, reviews: wReviews, price: wPrice };
-
-      // Map to normalized floats
-      rankingWeights.specs = wSpecs / 100;
-      rankingWeights.reviews = wReviews / 100;
-      rankingWeights.price = wPrice / 100;
-
-      labelWSpecs.textContent = `${wSpecs}%`;
-      labelWReviews.textContent = `${wReviews}%`;
-      labelWPrice.textContent = `${wPrice}%`;
-
-      // Re-trigger search calculation instantly if search is active
-      const query = searchInput.value.trim();
-      if (query.length >= 3) {
-        runRecommendation(query);
-      }
-    }
-
-    function renderCmsTable() {
-      cmsTbody.innerHTML = '';
-      products.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="font-weight:600;">${item.name}</td>
-          <td>${item.category}</td>
-          <td style="font-family:var(--font-code); font-weight:bold;">₹${item.price.toLocaleString('en-IN')}</td>
-          <td>${item.specs.length} Specs</td>
-          <td><span style="color:var(--color-success); font-weight:bold;">${item.rating}</span></td>
-          <td>
-            <button class="btn-action-cms" onclick="editCmsProduct('${item.id}')" title="Edit Item">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-            </button>
-            <button class="btn-action-cms" onclick="deleteCmsProduct('${item.id}')" title="Delete Item" style="color:var(--color-warning);">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-            </button>
-          </td>
-        `;
-        cmsTbody.appendChild(tr);
-      });
-    }
-
-    function adjustSpecsPlaceholder() {
-      const cat = document.getElementById('form-category').value;
-      const specsInput = document.getElementById('form-specs');
-      if (cat === 'Laptops') {
-        specsInput.placeholder = "e.g. 16GB RAM, Intel i7, 12hr Battery, IPS Screen";
-      } else if (cat === 'Noise-Cancelling Headphones') {
-        specsInput.placeholder = "e.g. ANC 10/10, 30hr Battery Life, Balanced Profile";
-      } else {
-        specsInput.placeholder = "e.g. 2TB Space, End-to-End Encryption, Sharing Integration";
-      }
-    }
-
-    function editCmsProduct(id) {
-      const product = products.find(p => p.id === id);
-      if (!product) return;
-
-      document.getElementById('form-product-id').value = product.id;
-      document.getElementById('form-title').value = product.name;
-      document.getElementById('form-category').value = product.category;
-      document.getElementById('form-price').value = product.price;
-      document.getElementById('form-rating').value = product.rating;
-      document.getElementById('form-specs').value = product.specs.join(", ");
-      document.getElementById('form-usecase').value = product.useCases.join(", ");
-
-      document.getElementById('cms-form-title').textContent = "Modify Product properties";
-      document.getElementById('form-submit-btn').textContent = "Apply Changes";
-      document.getElementById('cms-product-form').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function deleteCmsProduct(id) {
-      if (confirm("Confirm delete this item from database?")) {
-        products = products.filter(p => p.id !== id);
-        renderCmsTable();
-        
-        // Update current search in case deletion changes results
-        const query = searchInput.value.trim();
-        if (query.length >= 3) {
-          runRecommendation(query);
-        }
-      }
-    }
-
-    function handleCmsSubmit(e) {
-      e.preventDefault();
-      
-      const id = document.getElementById('form-product-id').value;
-      const title = document.getElementById('form-title').value;
-      const category = document.getElementById('form-category').value;
-      const price = parseInt(document.getElementById('form-price').value);
-      const rating = parseFloat(document.getElementById('form-rating').value);
-      const specs = document.getElementById('form-specs').value.split(',').map(s => s.trim());
-      const useCases = document.getElementById('form-usecase').value.split(',').map(s => s.trim());
-
-      if (id) {
-        // Edit existing product
-        const idx = products.findIndex(p => p.id === id);
-        if (idx > -1) {
-          products[idx] = { ...products[idx], name: title, category, price, rating, specs, useCases };
-        }
-      } else {
-        // Add new product
-        const newProduct = {
-          id: `custom-${Date.now()}`,
-          name: title,
-          category,
-          price,
-          rating,
-          specs,
-          useCases,
-          reviewsCount: 120
-        };
-        products.push(newProduct);
-      }
-
-      // Reset Form fields
-      document.getElementById('cms-product-form').reset();
-      document.getElementById('form-product-id').value = '';
-      document.getElementById('cms-form-title').textContent = "Add New Product to database";
-      document.getElementById('form-submit-btn').textContent = "Save Product";
-
-      renderCmsTable();
-      
-      const query = searchInput.value.trim();
-      if (query.length >= 3) {
-        runRecommendation(query);
-      }
-      
-      alert("Product saved successfully.");
-    }
+    /* ── BOOT ── */
+    load();
+    render();
   </script>
 </body>
+
 </html>
